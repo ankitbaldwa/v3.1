@@ -322,7 +322,6 @@ class Customers extends CI_Controller {
             }
             else
             {
-                
                 $status =  "<label class='label-warning label'> Pending </label>";
             }
             $no++;
