@@ -1,0 +1,2 @@
+[24-Oct-2019 23:24:48 Asia/Kolkata] PHP Fatal error:  Call to undefined function tcpdf() in /home/packomat/public_html/billing/application/controllers/Invoices.php on line 224
+[06-Nov-2019 18:15:04 Asia/Kolkata] PHP Parse error:  syntax error, unexpected '$objWriter' (T_VARIABLE) in /home/packomat/public_html/billing/application/controllers/Reports.php on line 904
