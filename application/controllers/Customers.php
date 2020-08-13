@@ -345,7 +345,6 @@ class Customers extends CI_Controller {
     }
     public function GSTIN_ajax(){
         $curl = curl_init();
-
         curl_setopt_array($curl, array(
         CURLOPT_URL => "https://ewaybillgst.gov.in/BillGeneration/BillGeneration.aspx/GetGSTNDetails",
         CURLOPT_RETURNTRANSFER => true,
