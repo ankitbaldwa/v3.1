@@ -40,7 +40,6 @@ class Reports extends CI_Controller {
     {        
         $customers = $this->Reports_model->GetFieldData('customers', "id, FirstName, LastName","user_id=".id."","","FirstName ASC");
         $taxdetails = $this->Reports_model->GetFieldData('mst_taxes', "name, value","user_id=".id."","","");
-        //print_r($taxdetails);exit;
         $data = array(
             'file' => 'Reports/customerReport',
             'body_class'=>BODY_CLASS,
