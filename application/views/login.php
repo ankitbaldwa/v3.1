@@ -6,15 +6,17 @@
   <div class="login-box-body">
     <p class="login-box-msg">Sign in to start your session</p>
     <span class="errid"><?php echo $this->session->userdata('login_error') <> '' ? $this->session->userdata('login_error') : ''; ?></span>
-    <form action="<?= site_url('login-action')?>" method="post">
+    <form action="<?= site_url('login-action')?>" method="post" onsubmit="return validation();">
       <div class="form-group has-feedback">
       	<input type="email" class="form-control" id="email" placeholder="Enter E-mail" name="email" autocomplete="off" value="<?php echo set_value('email'); ?>">
 		<?php echo form_error('email'); ?>
+    <span class="text text-danger" id="error_email"></span>
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
         <input type="password" class="form-control" id="password" placeholder="Enter your password" name="password">
 		<?php echo form_error('password'); ?>
+    <span class="text text-danger" id="error_password"></span>
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">
@@ -46,4 +48,44 @@
       increaseArea: '20%' /* optional */
     });
   });
+</script>
+<script>
+function validation(){
+        var email = $("#email").val().trim();
+        var password = $("#password").val().trim();
+        var alpha = /^[a-z A-Z]+$/;
+        var validateEmail = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+        
+        if(email =='')
+        {
+          $("#error_email").fadeIn().html("Please enter email").css("color","red");
+          setTimeout(function(){$("#error_email").fadeOut("&nbsp;");},2000)
+          $("#email").focus();
+          return false;       
+        }
+        else if(!validateEmail.test(email))
+        {
+          $("#error_email").fadeIn().html("Please enter valid email").css("color","red");
+          setTimeout(function(){$("#error_email").fadeOut("&nbsp;");},2000)
+          $("#email").focus();
+          return false;       
+        }
+
+        if(password =='')
+        {
+          $("#error_password").fadeIn().html("Please enter password").css("color","red");
+          setTimeout(function(){$("#error_password").fadeOut("&nbsp;");},2000)
+          $("#password").focus();
+          return false;       
+        }
+        /*else if(password.length>'0' && password.length>'8')
+        {
+            $("#error_password").fadeIn().html("Password should be 8 characters only").css("color","red");
+            setTimeout(function(){$("#error_password").fadeOut("&nbsp;");},2000)
+            $("#password").focus();
+            return false;
+        }*/
+}
+
+setTimeout(function(){$("#messages").fadeOut();},3000);
 </script>

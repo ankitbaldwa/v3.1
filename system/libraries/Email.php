@@ -1032,7 +1032,11 @@ class CI_Email {
 	 */
 	public function valid_email($email)
 	{
-		if (function_exists('idn_to_ascii') && strpos($email, '@'))
+		if (function_exists('idn_to_ascii') && defined('INTL_IDNA_VARIANT_UTS46') && $atpos = strpos($email, '@'))
+	    {
+	        $email = self::substr($email, 0, ++$atpos).idn_to_ascii(self::substr($email, $atpos), 0, INTL_IDNA_VARIANT_UTS46);
+	    }
+		/*if (function_exists('idn_to_ascii') && strpos($email, '@'))
 		{
 			list($account, $domain) = explode('@', $email, 2);
 			$domain = defined('INTL_IDNA_VARIANT_UTS46')
@@ -1043,7 +1047,7 @@ class CI_Email {
 			{
 				$email = $account.'@'.$domain;
 			}
-		}
+		}*/
 
 		return (bool) filter_var($email, FILTER_VALIDATE_EMAIL);
 	}
