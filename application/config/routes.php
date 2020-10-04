@@ -194,3 +194,5 @@ $route['city-create'] = "Mst_cities/create";
 $route['city-create-action'] = "Mst_cities/create_action";
 $route['city-update'] = "Mst_cities/update";
 $route['city-update-action'] = "Mst_cities/update_action";
+
+$route[RELEASE_NOTES] = "Welcome/release_notes";

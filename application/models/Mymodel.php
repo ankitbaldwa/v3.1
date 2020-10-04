@@ -21,7 +21,7 @@ class Mymodel extends CI_Model
         return $this->db->get($table)->row();
     }
     public function getReleaseNoteData($db, $table,$condition='',$order='',$group='',$limit=''){
-        $db->select('r.id, r.version, r.release_notes, r.status, p.name, r.release_notes_pdf');
+        $db->select('r.id, r.version, r.release_notes, r.status, p.name, r.release_notes_pdf, r.key_points');
         $db->from($table);
         $db->join('package_pricing p', 'r.package_id = p.id', 'left');
         if($condition != '')
@@ -33,6 +33,21 @@ class Mymodel extends CI_Model
         if($group != '')
         $db->group_by($group);
         return $db->get()->row();
+    }
+    public function GetReleaseNoteDataAllRecords($db, $table,$condition='',$order='',$group='',$limit='')
+    {
+        $db->select('r.id, r.version, r.release_notes, r.status, p.name, r.release_notes_pdf, r.key_points');
+        $db->from($table);
+        $db->join('package_pricing p', 'r.package_id = p.id', 'left');
+        if($condition != '')
+        $db->where($condition);
+        if($order != '')
+        $db->order_by($order);
+        if($limit != '')
+        $db->limit($limit);
+        if($group != '')
+        $db->group_by($group);
+        return $db->get()->result();
     }
     public function GetDataCount($table,$field='',$condition='',$order='',$group='',$limit='')
     {

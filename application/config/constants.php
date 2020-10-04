@@ -212,3 +212,4 @@ define('UPLOAD_WAYBILL_PDF','upload-waybill-pdf');
 define('TITLE','ACCORDANCE');
 define('BODY_CLASS','hold-transition skin-blue sidebar-mini fixed layout-fixed');
 define('MAINTANCE', false);
+define('RELEASE_NOTES','release-notes');

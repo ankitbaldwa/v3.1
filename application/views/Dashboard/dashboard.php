@@ -302,7 +302,7 @@
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-            <button type="button" class="btn btn-primary btn-sm release_note" data-url="<?= $release_note->release_notes_pdf ?>">Release Note</button>
+            <button type="button" class="btn btn-primary btn-sm release_note" data-url="<?= site_url(RELEASE_NOTES) ?>">Release Note</button>
             <button type="button" class="btn btn-danger btn-sm release_cancel">Cancel</button>
             <button type="button" class="btn btn-warning btn-sm release_stop" data-url="<?= site_url().'Welcome\update_release_note' ?>">Don't Show Again</button>
           </div>

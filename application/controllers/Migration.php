@@ -10,6 +10,7 @@ class Migration extends CI_Controller {
         $this->load->library('session');
     }
     public function index(){
+        $this->db->query('ALTER TABLE `release_notes` ADD `key_points` TEXT NOT NULL AFTER `release_notes_pdf`;');
         /** Dynamic Database Connection starts here */
         $get_all_db = $this->Mymodel->GetDataAllRecords('subscription');
         foreach($get_all_db as $db){

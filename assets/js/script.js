@@ -74,7 +74,7 @@ $(function () {
     $('.release_note').on( "click", function() {
       var data_url = $(this).attr('data-url');
       if(data_url != ''){
-        window.open("https://www.accordance.co.in/assets/release_pdf/"+data_url, "_blank"); 
+        window.open(data_url, "_blank"); 
       }
     });
     $('#year').on('change', function(){

@@ -223,6 +223,11 @@
 
         </li>
         <li>
+            <a href="<?= site_url(RELEASE_NOTES) ?>" target="_blank">
+                <i class="fa fa-file-text-o"></i> Release Notes
+            </a>
+        </li>
+        <li>
         <a href="<?= site_url(LOGOUT)?>"><i class="fa fa-sign-out"></i><span>Sign out</span></a>
         </li>
 

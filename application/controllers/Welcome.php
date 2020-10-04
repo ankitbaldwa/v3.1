@@ -288,21 +288,33 @@ class Welcome extends CI_Controller {
 		print_r(json_encode($data));exit;
 	}
 	public function get_client_ip() {
-        $ipaddress = '';
-        if (isset($_SERVER['HTTP_CLIENT_IP']))
-            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-        else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED'];
-        else if(isset($_SERVER['REMOTE_ADDR']))
-            $ipaddress = $_SERVER['REMOTE_ADDR'];
-        else
-            $ipaddress = 'UNKNOWN';
-        return $ipaddress;
+            $ipaddress = '';
+            if (isset($_SERVER['HTTP_CLIENT_IP']))
+                $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+            else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+                $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            else if(isset($_SERVER['HTTP_X_FORWARDED']))
+                $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+            else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
+                $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+            else if(isset($_SERVER['HTTP_FORWARDED']))
+                $ipaddress = $_SERVER['HTTP_FORWARDED'];
+            else if(isset($_SERVER['REMOTE_ADDR']))
+                $ipaddress = $_SERVER['REMOTE_ADDR'];
+            else
+                $ipaddress = 'UNKNOWN';
+            return $ipaddress;
 	}
+        public function release_notes(){
+            $main_db = switch_db_main();
+            //print_r($main_db['database']);exit;
+            $mainDB = $this->load->database($main_db, TRUE);
+            $release_note = $this->Mymodel->getReleaseNoteData($mainDB, "release_notes r", "r.status = 'Active'");
+            $release_notes_all = $this->Mymodel->GetReleaseNoteDataAllRecords($mainDB, "release_notes r","","id DESC");
+            $data = array(
+                    'release_note' => $release_note,
+                    'all_release_notes' => $release_notes_all
+		);
+            $this->load->view('release_notes', $data);
+        }
 }
