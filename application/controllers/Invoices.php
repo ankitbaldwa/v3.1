@@ -135,6 +135,7 @@ class Invoices extends CI_Controller {
         } else {
             $inv_no = $inv_no;
         }
+        $company_gst_no = $this->Mymodel->GetData("settings","name='GST Number' AND user_id=".id);
         $data = array(
             'file' => 'Invoices/form',
             'heading' => 'Create Sale Bill',
@@ -149,7 +150,8 @@ class Invoices extends CI_Controller {
             'TCS_per'=>$TCS_per->value,
             'Product'=>$productsdata,
             'Product'=>$productsdata,
-            'invoice_no'=> $inv_no
+            'invoice_no'=> $inv_no,
+            'company_gstin' => $company_gst_no->value
         );
         $this->load->view('layout', $data);
     }
@@ -166,50 +168,53 @@ class Invoices extends CI_Controller {
     		'Unit'=>$productsdata->Unit,
     		'Cost'=>$productsdata->Cost
     	); 
-		print_r(json_encode($data));exit();
+        echo json_encode($data);exit();
     }
     public function create_action()
     {
         $table = "invoice";
+        $company_code = $this->session->userdata('logged_in')['company_code'];
         if($_FILES['waybill_file']['error'] == 0){
-    		$_POST['waybill_file'] = 'Waybill_'.$_FILES['waybill_file']['name'];
-    		$targetfolder = FCPATH."/assets/upload/sales_waybill_pdf/";
-    
-    		$targetfolder = $targetfolder . basename('Waybill_'.$_FILES['waybill_file']['name']);
-    		move_uploaded_file($_FILES['waybill_file']['tmp_name'], $targetfolder);
+            $_POST['waybill_file'] = $company_code.'/Waybill_'.$_FILES['waybill_file']['name'];
+            if (!is_dir(FCPATH.'assets/upload/sales_waybill_pdf/'.$company_code)) {
+                mkdir(FCPATH.'assets/upload/sales_waybill_pdf/' . $company_code, 0777, TRUE);
+            }
+            $targetfolder = FCPATH."/assets/upload/sales_waybill_pdf/".$company_code."/";
+
+            $targetfolder = $targetfolder . basename('Waybill_'.$_FILES['waybill_file']['name']);
+            move_uploaded_file($_FILES['waybill_file']['tmp_name'], $targetfolder);
         } else {
             $_POST['waybill_file'] = "";
         }
         $data = array(
-       		'user_id'=>$_POST['user_id'],
-       		'Customer_id'=>$_POST['Customer_id'],
-       		'invoice_no'=>$_POST['invoice_no'],
-       		'invoice_date'=>date('Y-m-d', strtotime(str_replace('-', '/', $_POST['invoice_date']))),
-       		'Lorry_no'=>$_POST['Lorry_no'],
-       		'waybill'=>$_POST['waybill'],
-			'waybill_file'=>$_POST['waybill_file'],
-       		'Place'=>$_POST['Place'],
-       		'Gross_amount'=>$_POST['Gross_amount'],
-       		'Additional_amount'=>$_POST['Additional_amount'],
-       		'CGST_percentage'=>$_POST['CGST_percentage'],
-       		'SGST_percentage'=>$_POST['SGST_percentage'],
-       		'IGST_percentage'=>$_POST['IGST_percentage'],
-       		'CGST'=>$_POST['CGST'],
-       		'SGST'=>$_POST['SGST'],
-       		'IGST'=>$_POST['IGST'],
-       		'CESS_value'=>$_POST['CESS_value'],
+            'user_id'=>$_POST['user_id'],
+            'Customer_id'=>$_POST['Customer_id'],
+            'invoice_no'=>$_POST['invoice_no'],
+            'invoice_date'=>date('Y-m-d', strtotime(str_replace('-', '/', $_POST['invoice_date']))),
+            'Lorry_no'=>$_POST['Lorry_no'],
+            'waybill'=>$_POST['waybill'],
+            'waybill_file'=>$_POST['waybill_file'],
+            'Place'=>$_POST['Place'],
+            'Gross_amount'=>$_POST['Gross_amount'],
+            'Additional_amount'=>$_POST['Additional_amount'],
+            'CGST_percentage'=>$_POST['CGST_percentage'],
+            'SGST_percentage'=>$_POST['SGST_percentage'],
+            'IGST_percentage'=>$_POST['IGST_percentage'],
+            'CGST'=>$_POST['CGST'],
+            'SGST'=>$_POST['SGST'],
+            'IGST'=>$_POST['IGST'],
+            'CESS_value'=>$_POST['CESS_value'],
             'TCS_percentage'=>$_POST['TCS_percentage'],
             'CESS'=>$_POST['CESS'],
             'TCS'=>$_POST['TCS'],
-       		'Roundoff'=>$_POST['Roundoff'],
-       		'Netammount'=>$_POST['Netammount'],
-       		'Balance_Amount'=>$_POST['Netammount'],
-       		'Timestamp'=>date('Y-m-d H:i:s'),
-       		'Status'=>'Pending'
+            'Roundoff'=>$_POST['Roundoff'],
+            'Netammount'=>$_POST['Netammount'],
+            'Balance_Amount'=>$_POST['Netammount'],
+            'Timestamp'=>date('Y-m-d H:i:s'),
+            'Status'=>'Pending'
        );
        $last_id = $this->Invoices_model->SaveData($table,$data);
        $this->load->library('ciqrcode');
-       $company_code = $this->session->userdata('logged_in')['company_code'];
         if (!is_dir(FCPATH.'assets/Qr_code/'.$company_code)) {
             mkdir(FCPATH.'assets/Qr_code/' . $company_code, 0777, TRUE);
         }
@@ -250,15 +255,15 @@ class Invoices extends CI_Controller {
         // End DRAWING LOGO IN QR CODE
         $Save_QR = $this->Invoices_model->SaveData($table,array('Qr_code'=>$QR_CODE_File),"id=".$last_id);
        for($i = 0; $i< count($_POST['Product_id']); $i++){
-       		$inv_details = array(
-       			'Invoice_id'=>$last_id,
-       			'Product_id'=>$_POST['Product_id'][$i],
-       			'Hsn_code'=>$_POST['Hsn_code'][$i],
-       			'Qty'=>$_POST['Qty'][$i],
-       			'Price'=>$_POST['Price'][$i],
-       			'Amount'=>$_POST['Amount'][$i]
-       		);
-       		$last_id1 = $this->Invoices_model->SaveData('invoice_items',$inv_details);
+            $inv_details = array(
+                'Invoice_id'=>$last_id,
+                'Product_id'=>$_POST['Product_id'][$i],
+                'Hsn_code'=>$_POST['Hsn_code'][$i],
+                'Qty'=>$_POST['Qty'][$i],
+                'Price'=>$_POST['Price'][$i],
+                'Amount'=>$_POST['Amount'][$i]
+            );
+            $last_id1 = $this->Invoices_model->SaveData('invoice_items',$inv_details);
        }
        /** Saving data in ledger */
        $bal = $this->Mymodel->GetDataCount('ledger', array('sum(dr_amount) as dr_amount', 'sum(cr_amount) as cr_amount'), "customer_id=".$_POST['Customer_id']);
@@ -280,16 +285,14 @@ class Invoices extends CI_Controller {
            'created' => date('Y-m-d H:i:s')
        );
        $ledger_result = $this->Mymodel->SaveData('ledger', $ledger_data );
-        if(isset($last_id)){
-            $userLogs_data = array(
-                'user_id'=>id,
-                'device_info'=>$_SERVER['HTTP_USER_AGENT'],
-                'description'=>'Invoices Generated by '.name.' with Invoice no '.$_POST['invoice_no'],
-                'ip_address'=>$_SERVER['SERVER_ADDR']
-            );
-            //$result = $this->Mymodel->SaveData('user_logs', $userLogs_data );
-            redirect(site_url(INVOICES_VIEW.'/'.enc_dec(1, $last_id)));
-        }
+       $userLogs_data = array(
+            'user_id'=>id,
+            'device_info'=>$_SERVER['HTTP_USER_AGENT'],
+            'description'=>'Invoices Generated by '.name.' with Invoice no '.$_POST['invoice_no'],
+            'ip_address'=>$_SERVER['SERVER_ADDR']
+        );
+        $result = $this->Mymodel->SaveData('user_logs', $userLogs_data );
+        redirect(site_url(SEND_MAIL.'/'.enc_dec(1, $last_id)));
     }
     public function gengrate_qr_code(){
         $inv_data = $this->Mymodel->GetDataAllRecords('invoice');
@@ -339,9 +342,13 @@ class Invoices extends CI_Controller {
     }
     public function upload_waybill(){
         $table = "invoice";
+        $company_code = $this->session->userdata('logged_in')['company_code'];
         if($_FILES['file']['error'] == 0){
-    		$_POST['waybill_file'] = 'Waybill_'.$_FILES['file']['name'];
-    		$targetfolder = FCPATH."/assets/upload/sales_waybill_pdf/";
+    		$_POST['waybill_file'] = $company_code.'/Waybill_'.$_FILES['file']['name'];
+                if (!is_dir(FCPATH.'assets/upload/sales_waybill_pdf/'.$company_code)) {
+                    mkdir(FCPATH.'assets/upload/sales_waybill_pdf/' . $company_code, 0777, TRUE);
+                }
+    		$targetfolder = FCPATH."/assets/upload/sales_waybill_pdf/".$company_code."/";
     
     		$targetfolder = $targetfolder . basename('Waybill_'.$_FILES['file']['name']);
     		move_uploaded_file($_FILES['file']['tmp_name'], $targetfolder);
@@ -349,7 +356,7 @@ class Invoices extends CI_Controller {
             $_POST['waybill_file'] = "";
         }
         $res = $this->Invoices_model->SaveData($table,array('waybill_file'=>$_POST['waybill_file']),"id=".$_POST['id']);
-        print_r(json_encode(array('status'=>1)));exit;
+        echo json_encode(array('status'=>1));exit;
     }
     public function view($id){
         $id = enc_dec(2, $id);
@@ -559,9 +566,9 @@ class Invoices extends CI_Controller {
         $bal = $this->Mymodel->GetDataCount('ledger', array('sum(dr_amount) as dr_amount', 'sum(cr_amount) as cr_amount'), "customer_id=".$_POST['customer_id']);
        $op_bal = $this->Mymodel->GetDataCount('customers', array('Balance_as_on', 'Type', 'Opening_balance'), "id=".$_POST['customer_id']);
        if($op_bal->Type == 'Dr'){
-            $balance_amt = $op_bal->Opening_balance + $bal->dr_amount - $bal->cr_amount - $_POST['payed_amount'];
+            $balance_amt = ($op_bal->Opening_balance + $bal->dr_amount) - ($bal->cr_amount + $_POST['payed_amount']);
        } else {
-            $balance_amt = $op_bal->Opening_balance + $bal->cr_amount - $bal->dr_amount - $_POST['payed_amount'];
+            $balance_amt = ($op_bal->Opening_balance + $bal->cr_amount) - ($bal->dr_amount + $_POST['payed_amount']);
        }
        //print_r($bal);print_r($op_bal);print_r($balance_amt);exit;
         $ledger_data = array(
@@ -572,7 +579,7 @@ class Invoices extends CI_Controller {
             'transaction_date' => date('Y-m-d', strtotime(str_replace('-', '/', $_POST['payment_date']))),
             'narration' => 'Amount received from customer in bank or cash',
             'cr_amount'=> $_POST['payed_amount'],
-            'balance_amount'=>'',
+            'balance_amount'=>$balance_amt,
             'created' => date('Y-m-d H:i:s')
         );
         $ledger_result = $this->Mymodel->SaveData('ledger', $ledger_data );
@@ -607,7 +614,7 @@ class Invoices extends CI_Controller {
         } else {
             $email = array($user_data->email,'b.ankit@accordance.co.in');
         }
-        $this->custom->sendEmailSmtp($subject,$mail_body,$email,"", $data3[0]->value);
+        $this->custom->sendEmailSmtp($subject,$mail_body,$email,"", array($data3['settings'][12]->value,$data3['settings'][0]->value));
         /** Mail function ends here */
         if(isset($last_id) && isset($last_id2)){
            $userLogs_data = array(
@@ -764,7 +771,7 @@ class Invoices extends CI_Controller {
         } else {
             $waybill = "";
         }
-        $this->custom->sendEmailSmtp($subject,$mail_body,$email,$fileatt, $data['settings'][0]->value, $waybill);
+        $this->custom->sendEmailSmtp($subject,$mail_body,$email,$fileatt,array($data['settings'][12]->value,$data['settings'][0]->value), $waybill);
         redirect(INVOICES_VIEW.'/'.enc_dec(1, $id));
     }
  }

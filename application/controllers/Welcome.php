@@ -65,7 +65,13 @@ class Welcome extends CI_Controller {
 		//print_r($this->db->last_query());exit; 
 		$purchase_script2 = $this->Mymodel->Purchase_Script2('`purchase_invoice_payments` `pp` ',"`pp`.`Status` = 'Completed' AND 
 		`pp`.`payment_date` BETWEEN '".$fy->from_date."' AND '".$fy->to_date."' AND  `pp`.`user_id`='".Id."'", 'DATE_FORMAT(`pp`.`payment_date`, "%Y-%m") ASC','DATE_FORMAT(`pp`.`payment_date`, "%M %Y")');
-		//print_r(json_encode($script2));exit;
+		$email_setup = $this->Mymodel->GetData("settings","user_id = ".Id." AND name='from_email_setup'");
+                if(empty($email_setup)){
+                    $show_popup = true;
+                } else {
+                    $show_popup = false;
+                }
+                //print_r($email_setup);exit;
 		$main_db = switch_db_main();
 		//print_r($main_db['database']);exit;
 		$mainDB = $this->load->database($main_db, TRUE);
@@ -82,10 +88,19 @@ class Welcome extends CI_Controller {
 			'purchase_script2'=>json_encode($purchase_script2),
 			'Donut_chart'=>$Donut_chart[0],
 			'complete_gst' => $complete_gst,
-			'release_note' => $release_note
+			'release_note' => $release_note,
+                        'show_popup' => $show_popup
 		);
      	$this->load->view('layout', $data);
 	}
+        public function update_email(){
+            $save_data = $this->Mymodel->SaveData("settings", array('user_id'=>Id, "name"=>'from_email_setup', 'value'=>$_POST['email']));
+            if($save_data){
+                echo 1;exit;
+            } else {
+                echo 2; exit;
+            }
+        }
 	public function Profile()
 	{
 		$user_data = $this->Mymodel->GetData("users","id=".Id);

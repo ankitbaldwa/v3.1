@@ -475,12 +475,12 @@ class Reports extends CI_Controller {
     }
     public function monthlyReport()
     {        
-        $months = $this->Reports_model->GetFieldData('invoice', "DATE_FORMAT(invoice_date,'%M-%Y') AS MONTH","user_id=".id."","DATE_FORMAT(invoice_date,'%M-%Y')","DATE_FORMAT(invoice_date, '%m-%Y') DESC");
+        $year = $this->Reports_model->GetFieldData('mst_financial_year', "id, DATE_FORMAT(from_date,'%M %Y') AS FROM_YEAR, DATE_FORMAT(to_date,'%M %Y') AS TO_YEAR","user_id=".id."","","id DESC");
         $data = array(
             'file' => 'Reports/report',
             'body_class'=>BODY_CLASS,
             'heading'=>'Manage Monthly Report',
-            'months'=>$months,
+            'year'=>$year,
             'ajax' => MONTHLY_REPORT_AJAX,
             'excel_Report' => MONTHLY_REPORT_EXCEL,
             'table'=> "<th>Sr No</th>
@@ -497,7 +497,14 @@ class Reports extends CI_Controller {
     public function monthlyReport_ajax()
     {
         $table = "invoice i";
-        $cond = "i.user_id=".id ." and year(i.invoice_date) = '".date('Y', strtotime($_POST['SearchData']))."' AND monthname(i.invoice_date) = '".date('F', strtotime($_POST['SearchData']))."' AND i.Status != 'Cancelled'";
+        if(empty($_POST['SearchData']) && empty($_POST['fy'])){
+            $cond = "i.user_id=".id ." and i.Status != 'Cancelled'";
+        } else if(!empty($_POST['fy']) && empty($_POST['SearchData'])){
+            $year = $this->Reports_model->GetData('mst_financial_year',"id=".$_POST['fy']);
+            $cond = "i.user_id=".id ." and i.Status != 'Cancelled' and i.invoice_date BETWEEN '".date('Y-m-d',strtotime($year->from_date))."' and '".date('Y-m-d',strtotime($year->to_date))."'";
+        } else {
+            $cond = "i.user_id=".id ." and i.Status != 'Cancelled' and year(i.invoice_date) = '".date('Y', strtotime($_POST['SearchData']))."' AND monthname(i.invoice_date) = '".date('F', strtotime($_POST['SearchData']))."'";
+        }
         $userData=$this->Reports_model->get_datatables($table,$cond);
         $data = array();    
         $no= 0; 
@@ -545,7 +552,14 @@ class Reports extends CI_Controller {
     public function monthlyReportExcel()
     {
         $table = "invoice i";
-        $cond = "i.user_id=".id ." and year(i.invoice_date) = '".date('Y', strtotime($_POST['months']))."' AND monthname(i.invoice_date) = '".date('F', strtotime($_POST['months']))."' AND i.Status != 'Cancelled'";
+        if(empty($_POST['months']) && empty($_POST['years'])){
+            $cond = "i.user_id=".id ." and i.Status != 'Cancelled'";
+        } else if(!empty($_POST['years']) && empty($_POST['months'])){
+            $year = $this->Reports_model->GetData('mst_financial_year',"id=".$_POST['years']);
+            $cond = "i.user_id=".id ." and i.Status != 'Cancelled' and i.invoice_date BETWEEN '".date('Y-m-d',strtotime($year->from_date))."' and '".date('Y-m-d',strtotime($year->to_date))."'";
+        } else {
+            $cond = "i.user_id=".id ." and i.Status != 'Cancelled' and year(i.invoice_date) = '".date('Y', strtotime($_POST['months']))."' AND monthname(i.invoice_date) = '".date('F', strtotime($_POST['months']))."'";
+        }
         $userData=$this->Reports_model->GetDataAll($table,$cond);
         //print_r($userData);exit;
         //load our new PHPExcel library
@@ -622,14 +636,19 @@ class Reports extends CI_Controller {
         //force user to download the Excel file without writing it to server's HD
         $objWriter->save('php://output');
     }
+    public function get_months() {
+        $year = $this->Reports_model->GetData('mst_financial_year',"id=".$_POST['id']);
+        $month = $this->Reports_model->GetFieldData('invoice', "DATE_FORMAT(invoice_date,'%M %Y') AS MONTH","user_id=".id." and invoice_date BETWEEN '".date('Y-m-d',strtotime($year->from_date))."' and '".date('Y-m-d',strtotime($year->to_date))."'","DATE_FORMAT(invoice_date,'%M')","DATE_FORMAT(invoice_date, '%m') DESC");
+        echo json_encode($month);exit;
+    }
     public function outstandingReport()
     {
-        $months = $this->Reports_model->GetFieldData('invoice', "DATE_FORMAT(invoice_date,'%M-%Y') AS MONTH","user_id=".id." and status='Pending'","DATE_FORMAT(invoice_date,'%M-%Y')","DATE_FORMAT(invoice_date, '%m-%Y') DESC");
+        $year = $this->Reports_model->GetFieldData('mst_financial_year', "id, DATE_FORMAT(from_date,'%M %Y') AS FROM_YEAR, DATE_FORMAT(to_date,'%M %Y') AS TO_YEAR","user_id=".id."","","id DESC");
         $data = array(
             'file' => 'Reports/report',
             'body_class'=>BODY_CLASS,
             'heading'=>'Manage Outstanding Report',
-            'months'=>$months,
+            'year'=>$year,
             'ajax' => OUTSTANDING_REPORT_AJAX,
             'excel_Report' => OUTSTANDING_REPORT_EXCEL,
             'table'=> "<th>Sr No</th>
@@ -647,7 +666,14 @@ class Reports extends CI_Controller {
     public function outstandingReport_ajax()
     {
         $table = "invoice i";
-        $cond = "i.user_id=".id ." and i.status='Pending' and year(i.invoice_date) = '".date('Y', strtotime($_POST['SearchData']))."' AND monthname(i.invoice_date) = '".date('F', strtotime($_POST['SearchData']))."'";
+        if(empty($_POST['SearchData']) && empty($_POST['fy'])){
+            $cond = "i.user_id=".id ." and i.status='Pending'";
+        } else if(!empty($_POST['fy']) && empty($_POST['SearchData'])){
+            $year = $this->Reports_model->GetData('mst_financial_year',"id=".$_POST['fy']);
+            $cond = "i.user_id=".id ." and i.status='Pending' and i.invoice_date BETWEEN '".date('Y-m-d',strtotime($year->from_date))."' and '".date('Y-m-d',strtotime($year->to_date))."'";
+        } else {
+            $cond = "i.user_id=".id ." and i.status='Pending' and year(i.invoice_date) = '".date('Y', strtotime($_POST['SearchData']))."' AND monthname(i.invoice_date) = '".date('F', strtotime($_POST['SearchData']))."'";
+        }
         $userData=$this->Reports_model->get_datatables($table,$cond);
         $data = array();    
         $no= 0; 
@@ -688,7 +714,14 @@ class Reports extends CI_Controller {
     public function outstandingReportExcel()
     {
         $table = "invoice i";
-        $cond = "i.user_id=".id ." and i.status='Pending' and year(i.invoice_date) = '".date('Y', strtotime($_POST['months']))."' AND monthname(i.invoice_date) = '".date('F', strtotime($_POST['months']))."'";
+        if(empty($_POST['months']) && empty($_POST['years'])){
+            $cond = "i.user_id=".id ." and i.status='Pending'";
+        } else if(!empty($_POST['years']) && empty($_POST['months'])){
+            $year = $this->Reports_model->GetData('mst_financial_year',"id=".$_POST['years']);
+            $cond = "i.user_id=".id ." and i.status='Pending' and i.invoice_date BETWEEN '".date('Y-m-d',strtotime($year->from_date))."' and '".date('Y-m-d',strtotime($year->to_date))."'";
+        } else {
+            $cond = "i.user_id=".id ." and i.status='Pending' and year(i.invoice_date) = '".date('Y', strtotime($_POST['months']))."' AND monthname(i.invoice_date) = '".date('F', strtotime($_POST['months']))."'";
+        }
         $userData=$this->Reports_model->GetDataAll($table,$cond);
         //print_r($userData);exit;
         //load our new PHPExcel library
@@ -1042,7 +1075,7 @@ class Reports extends CI_Controller {
         } else {
             $waybill = "";
         }
-        $this->custom->sendEmailSmtp($subject,$mail_body,$email,$fileatt, $data['settings'][0]->value, $waybill);
+        $this->custom->sendEmailSmtp($subject,$mail_body,$email,$fileatt, array($data['settings'][12]->value,$data['settings'][0]->value), $waybill);
         //redirect(INVOICES);
         redirect(INVOICES_VIEW.'/'.enc_dec(1, $id));
     }

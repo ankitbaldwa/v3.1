@@ -308,7 +308,27 @@
           </div>
       </div>
   </div>
+  <!-- Update From Email Setup Popup -->
+  <div class="modal" tabindex="-1" role="dialog" id="email_setup_popup">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title"><b>From Mail Setup For Company</b></h5>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="from_Email">From Email address</label>
+            <input type="email" class="form-control" id="from_Email" aria-describedby="emailHelp" placeholder="Enter email" name="from_Email">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id='update_email_setup' data-url="<?= site_url('Welcome/update_email') ?>">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script>
+    var show_popup = '<?= $show_popup ?>';
     var script = <?= $script; ?>;
     //var purchase_script = <?//= $purchase_script; ?>;
     var script2 = <?= $script2; ?>;

@@ -151,6 +151,7 @@ $route[MONTHLY_REPORT] = "Reports/monthlyReport";
 $route[MONTHLY_REPORT_AJAX] = 'Reports/monthlyReport_ajax';
 $route[MONTHLY_REPORT_EXCEL] = 'Reports/monthlyReportExcel';
 $route[OUTSTANDING_REPORT] = "Reports/outstandingReport";
+$route[GET_MONTHS] = "Reports/get_months";
 $route[OUTSTANDING_REPORT_AJAX] = 'Reports/outstandingReport_ajax';
 $route[OUTSTANDING_REPORT_EXCEL] = 'Reports/outstandingReportExcel';
 $route[PAYMENT_REPORT] = "Reports/paymentReport";
@@ -175,3 +176,21 @@ $route[PURCHASE_PAYMENT_REPORT_EXCEL] = 'Purchase_Reports/paymentReport_excel';
 $route[SEND_MAIL.'/(:any)'] = 'Reports/send_mail/$1';
 $route[INV_MAIL.'/(:any)'] = 'Invoices/inv_mail/$1';
 $route[UPLOAD_WAYBILL_PDF] = 'Invoices/upload_waybill';
+
+$route['countries'] = "Mst_countries/index";
+$route['countries-create'] = "Mst_countries/create";
+$route['countries-create-action'] = "Mst_countries/create_action";
+$route['countries-update'] = "Mst_countries/update";
+$route['countries-update-action'] = "Mst_countries/update_action";
+
+$route['states'] = "Mst_states/index";
+$route['states-create'] = "Mst_states/create";
+$route['states-create-action'] = "Mst_states/create_action";
+$route['states-update'] = "Mst_states/update";
+$route['states-update-action'] = "Mst_states/update_action";
+
+$route['city'] = "Mst_cities/index";
+$route['city-create'] = "Mst_cities/create";
+$route['city-create-action'] = "Mst_cities/create_action";
+$route['city-update'] = "Mst_cities/update";
+$route['city-update-action'] = "Mst_cities/update_action";

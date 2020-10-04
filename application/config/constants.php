@@ -179,6 +179,7 @@ define('CUSTOMER_REPORT_EXCEL','customer-report-excel');
 define('GST_REPORT','gst-report');
 define('GST_REPORT_EXCEL','gst-report-excel');
 define('GST_REPORT_AJAX','gst-report-ajax');
+define('GET_MONTHS','get-months');
 define('MONTHLY_REPORT','monthly-report');
 define('MONTHLY_REPORT_AJAX','monthly-report-ajax');
 define('MONTHLY_REPORT_EXCEL','monthly-report-excel');

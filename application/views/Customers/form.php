@@ -91,7 +91,7 @@
                           <div class="form-group">
                             <label class="col-sm-3 control-label" for="Address">Address <span class="text text-danger">*</span></label>
                             <div class="col-sm-9">
-                              <textarea rows="3" id="Address" class="form-control" name="Address" placeholder="Address"><?= (isset($data))?$data->Address:'' ?></textarea>
+                              <textarea rows="2" id="Address" class="form-control" name="Address" placeholder="Address"><?= (isset($data))?$data->Address:'' ?></textarea>
                               <span id="errAddress" class="text text-danger"></span>
                             </div>
                           </div>
@@ -124,6 +124,13 @@
                             <div class="col-sm-9">
                               <input type="text" placeholder="Zip" id="Zip" class="form-control" name="Zip" value="<?= (isset($data))?$data->Zip:'' ?>" maxlength="6">
                               <span id="errZip" class="text text-danger"></span>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label class="col-sm-3 control-label" for="Place">Place <span class="text text-danger">*</span></label>
+                            <div class="col-sm-9">
+                              <input type="text" placeholder="Place" id="Place" class="form-control" name="place" value="<?= (isset($data))?$data->place:'' ?>">
+                              <span id="errPlace" class="text text-danger"></span>
                             </div>
                           </div>
                           <div class="form-group">

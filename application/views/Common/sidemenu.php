@@ -50,8 +50,6 @@
 
         </li>
 
-        <?php if($this->session->userdata('logged_in')['role'] == 'Admin') { ?>
-
         <li class="treeview">
 
           <a href="#">
@@ -70,17 +68,15 @@
 
           <ul class="treeview-menu">
 
-            <li><a href="pages/charts/chartjs.html"><i class="fa fa-circle-o"></i> Countries</a></li>
+            <li><a href="<?= site_url('countries') ?>"><i class="fa fa-circle-o"></i> Countries</a></li>
 
-            <li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i> States</a></li>
+            <li><a href="<?= site_url('states') ?>"><i class="fa fa-circle-o"></i> States</a></li>
 
-            <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Cities</a></li>
+            <li><a href="<?= site_url('city') ?>"><i class="fa fa-circle-o"></i> Cities</a></li>
 
           </ul>
 
         </li>
-
-        <?php } ?>
 
         <?php if($this->session->userdata('logged_in')['role'] == 'Admin') { ?>
 

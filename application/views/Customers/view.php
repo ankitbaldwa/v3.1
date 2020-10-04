@@ -32,7 +32,7 @@
                            </div>
                            <div class="clearfix"></div>
                            <div class="form-group">
-                              <label class="col-sm-3 control-label pull-left" for="DOB">Date of registerationv</label>
+                              <label class="col-sm-3 control-label pull-left" for="DOB">Date of registeration</label>
                               <div class="col-sm-9 pull-right">
                                  <?= (isset($data))?$data->DOB:'' ?>
                               </div>
@@ -100,6 +100,13 @@
                               <label class="col-sm-3 control-label pull-left" for="Zip">Zip</label>
                               <div class="col-sm-9 pull-right">
                                  <?= (isset($data) && $data->Zip != '0')?$data->Zip:'N/A' ?>
+                              </div>
+                           </div>
+                           <div class="clearfix"></div>
+                           <div class="form-group">
+                              <label class="col-sm-3 control-label pull-left" for="place">Place</label>
+                              <div class="col-sm-9 pull-right">
+                                 <?= (isset($data) && $data->place != '')?$data->place:'N/A' ?>
                               </div>
                            </div>
                            <div class="clearfix"></div>

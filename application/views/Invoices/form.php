@@ -324,7 +324,7 @@
 
                                 <div class="col-md-9 text-right">
 
-                                  <input type="checkbox" id="isIGST"/>
+                                  <input type="checkbox" id="isIGST" data-company-gstin="<?= $company_gstin ?>"/>
 
                                   <label for="igst">IGST (<span id="IGST_per"><?= $IGST_per ?></span>%)</label>
 
@@ -475,6 +475,87 @@
 <!-- ./wrapper -->
 
 <input type="hidden" id="product_url" value="<?= site_url(INVOICES_PRODUCT_AJAX) ?>">
+
+<div class="modal fade" id="popup-customer-info" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span></button>
+          <h4 class="modal-title">Customer Information</h4>
+        </div>
+        <div class="modal-body">
+          <div class="col-md-6">
+            <div class="form-group">
+               <label class="col-sm-3 control-label pull-left" for="Name">Name</label>
+               <div class="col-sm-9 pull-right" id="name">
+               </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="form-group">
+               <label class="col-sm-3 control-label pull-left" for="GST_No">GST_No</label>
+               <div class="col-sm-9 pull-right" id="gst_no">
+               </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="form-group">
+               <label class="col-sm-3 control-label pull-left" for="Email">Email</label>
+               <div class="col-sm-9 pull-right" id="email">
+               </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="form-group">
+               <label class="col-sm-3 control-label pull-left" for="Mobile">Mobile</label>
+               <div class="col-sm-9 pull-right" id="mobile">
+               </div>
+            </div>
+            <div class="clearfix"></div>
+         </div>
+         <div class="col-md-6">
+            <div class="form-group">
+               <label class="col-sm-3 control-label pull-left" for="Address">Address</label>
+               <div class="col-sm-9 pull-right" id="address">
+               </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="form-group">
+               <label class="col-sm-3 control-label pull-left" for="City">City</label>
+               <div class="col-sm-9 pull-right" id="city">
+               </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="form-group">
+               <label class="col-sm-3 control-label pull-left" for="State">State</label>
+               <div class="col-sm-9 pull-right" id="state">
+               </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="form-group">
+               <label class="col-sm-3 control-label pull-left" for="Country">Country</label>
+               <div class="col-sm-9 pull-right" id="country">
+               </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="form-group">
+               <label class="col-sm-3 control-label pull-left" for="Zip">Zip</label>
+               <div class="col-sm-9 pull-right" id="zip">
+               </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="form-group">
+               <label class="col-sm-3 control-label pull-left" for="place">Place</label>
+               <div class="col-sm-9 pull-right" id="place">
+               </div>
+            </div>
+            <div class="clearfix"></div>
+         </div>
+         <div class="clearfix"></div>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
 
 <script>
 

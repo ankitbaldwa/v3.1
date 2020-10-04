@@ -226,7 +226,7 @@ class Mymodel extends CI_Model
         $feilds = array('U.id','U.FirstName', 'U.LastName', 'U.GST_No', 'sum(i.Balance_Amount) as balance_amount');
         $this->db->select($feilds);
         $this->db->from($table);
-        $this->db->join('invoice i', "U.id = i.Customer_id AND i.Status != 'Cancelled'",'LEFT');
+        $this->db->join('invoice i', "U.id = i.Customer_id AND i.Status != 'Cancelled' AND i.invoice_date <= '2020-03-31'",'LEFT');
         $this->db->group_by('U.id');
         return $this->db->get()->result();
     }

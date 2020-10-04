@@ -26,15 +26,23 @@
               <div class="box box-primary">
               	<div class="box-header with-border">
                   <form method="post" action="<?= site_url($excel_Report)?>">
-                    <div class="form-group">
-                        <select name="months" class="form-control pull-left" style="width:30%" id="month">
-                            <?php
-                                foreach ($months as $key => $value) {
-                                    $res = (date('F-Y') == $value->MONTH)?'selected':'';
-                                    echo "<option value='".$value->MONTH."' ".$res.">".$value->MONTH."</option>";
+                    <div class="form-group form-group-sm">
+                        <select name="years" class="form-control pull-left input-sm" style="width:15%" id="year" data-url="<?= site_url(GET_MONTHS)?>">
+                            <?php 
+                                echo "<option value=''> - Select Financial Year - </option>";
+                                foreach ($year as $key => $value) {
+                                    echo "<option value='".$value->id."'>".$value->FROM_YEAR.' - '.$value->TO_YEAR."</option>";
                                 }
                             ?>
                         </select>
+                    </div>
+                      <div class="col-sm-1"></div>
+                    <div class="form-group form-group-sm">
+                        <select name="months" class="form-control pull-left input-sm" style="width:15%" id="month">
+                            <option value=''> - Select Financial Year First - </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <div class="pull-right">
                           <button type="submit" class="btn btn-success btn-xs"><i class="fa fa-file-excel-o"></i> Export To Excel</button>
                         </div>

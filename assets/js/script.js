@@ -77,6 +77,27 @@ $(function () {
         window.open("https://www.accordance.co.in/assets/release_pdf/"+data_url, "_blank"); 
       }
     });
+    $('#year').on('change', function(){
+        var data_url = $(this).attr('data-url');
+      $.ajax({
+        url: data_url,
+        type: "post",
+        data: "id="+$(this).val(),
+        dataType: "json",
+        success: function (response) {
+          $("#month").empty().append("<option value=''> - Select Month - </option>");
+          $.each( response, function( key, value ) {
+            $.each( value, function( key1, value1 ) {
+                $("#month").append("<option value='"+value1+"'>"+value1+"</option>");
+            });
+          });
+          $('.reports_datatable').dataTable().api().ajax.reload();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(textStatus, errorThrown);
+        }
+      });
+    });
     //Script for Saving tax and bank details
     $('#saveCGST').hide();
     $('#saveSGST').hide();
@@ -432,23 +453,47 @@ $(function () {
         });
 	});
 	$("#Customer").on('change', function() {
-		var data_url = $(this).attr('data-url');
-		$.ajax({
-            url: data_url,
-            type: "post",
-            dataType: "html",
-            data:  "id="+$(this).val(),
-            success: function (response) {
-              var data = JSON.parse(response);
-			  $('#gstin').empty();
-			  $('#gstin').text(data.GST_No);
-              //alert(data.GST_No);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-              console.log(textStatus, errorThrown);
-            }
-        });
+            var data_url = $(this).attr('data-url');
+            $.ajax({
+                url: data_url,
+                type: "post",
+                dataType: "html",
+                data:  "id="+$(this).val(),
+                success: function (response) {
+                    var data = JSON.parse(response);
+                    $('#gstin').empty();
+                    $('#gstin').text(data.GST_No).attr('json-data', response);
+                    $('#place').val(data.place);
+                    var company_gstin = $("#isIGST").attr('data-company-gstin');
+                    if(data.GST_No.slice(0, 2) == company_gstin.slice(0, 2)){
+                        $('#isIGST').prop('checked', false);
+                    } else {
+                        $('#isIGST').prop('checked', true);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                  console.log(textStatus, errorThrown);
+                }
+            });
 	});
+        $("#gstin").on("click", function(){
+            var json = $(this).attr('json-data');
+            $('#popup-customer-info').modal({
+                show: true
+            });
+            var data = JSON.parse(json);
+            $('#name').text(data.FirstName+' '+data.LastName);
+            $('#gst_no').text(data.GST_No);
+            $('#email').text(data.Email);
+            $('#mobile').text(data.Mobile);
+            $('#address').text(data.Address);
+            $('#city').text(data.City);
+            $('#state').text(data.State);
+            $('#country').text(data.Country);
+            $('#zip').text(data.Zip);
+            $('#place').text(data.place);
+            //alert(json);
+        });
     //Validation for voucher creation
     $("#voucher_btn").click( function (event){
       var voucher_type = $(".voucher_type").is(':checked');
@@ -669,6 +714,7 @@ $(function () {
       var State = $("#State").val();
       var Cities = $("#Cities").val();
       var Zip_code = $("#Zip").val();
+      var Place = $("#Place").val();
       var pattern_email=/^[a-z0-9._-]+@[a-z]+.[a-z.]{2,5}$/i;
       var reggst = /^([0-9]){2}([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}([0-9]){1}([a-zA-Z]){1}([0-9]){1}?$/;
       var Opening_balance = $("#Opening_balance").val();
@@ -809,6 +855,15 @@ $(function () {
         $("#Zip").focus();
         setTimeout(function(){
           $("#errZip").fadeOut("slow");
+        },2000);
+        return false;
+      }
+      if(Place == '') {
+          var ePlace = "Please Enter Place";
+        $("#errPlace").text(ePlace).fadeIn("slow");
+        $("#Place").focus();
+        setTimeout(function(){
+          $("#errPlace").fadeOut("slow");
         },2000);
         return false;
       }
@@ -1529,6 +1584,7 @@ $(document).ready(function(){
           "type": "POST",
           "data": function(d) {               
               d.SearchData = $("#month").val();//alert(d.SearchData);
+              d.fy = $("#year").val();
           }
       }
   });
@@ -1539,6 +1595,8 @@ $(document).ready(function(){
       // DataTables server-side processing mode
       "serverSide": true,
       // Load data from an Ajax source
+      "bLengthChange": true,
+      "pageLength" : 10,
       "ajax": {
           "url": url,
           "type": "POST",
@@ -1547,7 +1605,6 @@ $(document).ready(function(){
               d.SearchData = $("#customer").val();
               d.start = $("#start").val();
               d.end = $("#end").val();
-
           }
       }
   });
@@ -1581,7 +1638,50 @@ $(document).ready(function(){
     //alert(month);
     $('.reports_datatable').dataTable().api().ajax.reload();
   });
+  if(typeof show_popup !== 'undefined' && show_popup == 1){
+      $('#email_setup_popup').modal({
+        backdrop: 'static',
+        show: true
+      });
+  } else {
+      $('#email_setup_popup').modal('hide');
+  }
+  $("#update_email_setup").off('click');
+  $("#update_email_setup").on('click', function(){
+      var from_email = $('#from_Email').val();
+      if($.trim(from_email) == ''){
+          $("#from_Email").parent().addClass('has-error');
+          $("#from_Email").after('<span class="help-block">Email is required.</span>');
+      }
+      else if(!isValidEmailAddress($.trim(from_email))){
+          $("#from_Email").parent().addClass('has-error');
+          $("#from_Email").next("span").remove();
+          $("#from_Email").after('<span class="help-block">Email is invalid.</span>');
+      } else {
+          $("#from_Email").parent().addClass('has-success').removeClass('has-error');
+          $("#from_Email").next("span").remove();
+          $.ajax({
+            type:"post",
+            url: $(this).attr('data-url'),
+            data:{email:$.trim(from_email)},
+            cache:false,
+            success:function(response)
+            { 
+              if(response == 1){
+                  $('#email_setup_popup').modal('hide');
+              } else {
+                  $("#from_Email").after('<span class="text-danger" id="errMsg">Unable to update, Please try after some time.</span>');
+                  setTimeout(function(){$("#from_Email").next("span").remove();}, 4000);
+              }
+            }
+        });
+      }
+  });
 });
+function isValidEmailAddress(emailAddress) {
+    var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+    return pattern.test(emailAddress);
+}
 function ChangePassword()
 {
     var cpassword = $('#cpassword').val();
