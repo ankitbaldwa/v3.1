@@ -7,6 +7,8 @@
 		<meta property="og:image" itemprop="image" content="<?= base_url() ?>/assets/dist/img/Accordance_logo.png" />
 		<meta name="description" content="Increase your output, minimize mistakes and save time with ACCORDANCE Features">
 		<meta name="author" content="Accordance">
+                <!--====== Favicon Icon ======-->
+                <link rel="shortcut icon" href="https://accordance.co.in/assets/images/favicon.png" type="image/png">
 		<!-- Bootstrap 3.3.7 -->
 		  <link rel="stylesheet" href="<?= base_url(); ?>assets/bower_components/bootstrap/dist/css/bootstrap.min.css">
 		  <!-- Font Awesome -->

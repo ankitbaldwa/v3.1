@@ -5749,7 +5749,7 @@
  }
  
  .attachment-block .attachment-pushed {
-     margin-left: 110px
+     margin-left: 0px
  }
  
  .attachment-block .attachment-heading {
@@ -5757,7 +5757,9 @@
  }
  
  .attachment-block .attachment-text {
-     color: #555
+     color: #555;
+     padding-top: 15px;
+    text-align: center;
  }
  
  .connectedSortable {
@@ -6017,4 +6019,36 @@
         height: auto;
         margin-bottom: 0;
     }
+}
+blockquote {
+    border-left: 0px solid #eee !important;
+}
+.releated-notes ul {
+    overflow-y: auto;
+    padding-top: 0px;
+    z-index: 10;
+    max-height: 360px;
+}
+.releated-notes li {
+    border-bottom: 1px dotted #c4c4c4;
+    list-style: none;
+    padding: 0 5px;
+}
+.releated-notes li>a {
+    color: #333;
+    display: block;
+    line-height: 28px;
+    padding: 0;
+    text-decoration: none;
+}
+.gst-label{
+    padding-top: 15px;
+    padding-bottom: 15px;
+    line-height: 20px;
+}
+.gst-label .gst-text {
+    color: #fff;
+    font-size: x-large;
+    cursor: pointer;
+    text-align: center;
 }

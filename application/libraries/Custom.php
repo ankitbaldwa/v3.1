@@ -16,10 +16,10 @@ class Custom{
     {
         $this->CI =& get_instance();
         $this->CI->load->library('email');
-        $this->CI->email->from($company);
-        $this->CI->email->reply_to($company);
+        $this->CI->email->from($company[0],$company[1]);
+        $this->CI->email->reply_to($company[0],$company[1]);
         $this->CI->email->to($to);
-        $this->CI->email->cc($cc);
+        //$this->CI->email->cc($cc);
         $this->CI->email->subject($subject);
         $this->CI->email->message($body_email);
         if (!empty($attachment)) {
@@ -34,7 +34,7 @@ class Custom{
         }
         $this->CI->email->set_mailtype("html");
         $this->CI->email->send();
-        //echo $this->CI->email->print_debugger();
+        //echo $this->CI->email->print_debugger();exit;
    }
     function sendEmailSmtp_old($subject,$body_email,$to,$attachment='',$company,$attachment2='')
     {

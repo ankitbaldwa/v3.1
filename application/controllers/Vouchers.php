@@ -19,11 +19,13 @@ class Vouchers extends CI_Controller {
             define('name',$login_name->username);
             define('last_login',$login_name->last_login);
             define('Id', $this->session->userdata('logged_in')['id']);
-            $setting_data = $this->Mymodel->GetDataArray('settings',"","user_id='".$this->session->userdata('logged_in')['id']."' and (name='Company Name' or name='Invoice_no')");
-			if($setting_data[0]['name'] == 'Company Name')
+            $setting_data = $this->Mymodel->GetDataArray('settings',"","user_id='".$this->session->userdata('logged_in')['id']."' and (name='Company Name' or name='Invoice_no' or name='GST Number')");
+                        if($setting_data[0]['name'] == 'Company Name')
 				define('LOGO',$setting_data[0]['value']);
-			if($setting_data[1]['name'] == 'Invoice_no')
-				define('LOGO_MINI', $setting_data[1]['value']);
+			if($setting_data[2]['name'] == 'Invoice_no')
+				define('LOGO_MINI', $setting_data[2]['value']);
+                        if($setting_data[1]['name'] == 'GST Number')
+				define('GST_NUMBER', $setting_data[1]['value']);
 			define('profile',$login_name->profile);
         } else {
             redirect(LOGIN);
@@ -129,7 +131,6 @@ class Vouchers extends CI_Controller {
     public function voucher_print($id){
         $id = enc_dec(2, $id);
         $this->load->library('Numbertowordconvertsconver');
-        $id = base64_decode($id);
         $data = $this->Vouchers_model->GetData('voucher',"user_id='".Id."' and id=".$id."");
         $cond3 = "user_id=".Id;
         $data3 = $this->Vouchers_model->GetFieldData('settings','name, value', $cond3);

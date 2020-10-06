@@ -5,7 +5,7 @@ if(!$this->session->userdata('logged_in')){
 ?>
 <header class="main-header">
     <!-- Logo -->
-    <a href="" class="logo">
+    <a href="javascript: void();" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b><?= LOGO_MINI ?></b></span>
       <!-- logo for regular state and mobile devices -->
@@ -20,6 +20,9 @@ if(!$this->session->userdata('logged_in')){
       
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
+            <li class="pull-left gst-label">
+                <span class="logo-sm gst-text" id="myInput"><?php echo GST_NUMBER; ?></span>
+            </li>
           <li class="dropdown user user-menu">
             <a href="javascript:void(0);" class="dropdown-toggle">
               <img src="<?= base_url() ?>/assets/dist/img/<?= profile ?>" class="user-image" alt="User Image">
