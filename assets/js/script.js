@@ -427,6 +427,134 @@ $(function () {
             "orderable": false
         }]
     });
+    var current_fy = $(".current-fy").text();
+    var ledger_table = $('.ledger_datatable').DataTable({
+        //"dom": 'fBrtip<"clear">R',
+        "lengthMenu": [[25, 100, -1], [25, 100, "All"]],
+        "pageLength": 25,
+        "bLengthChange": true,
+        // Processing indicator
+        "processing": true,
+        "searching": false,
+        "responsive": true,
+        "serverSide": true,
+        "bSort" : false,
+        "ajax": {
+            "url": url,
+            "type": "POST",
+            "data": function(d) {               
+                //d.SearchData = "customer='"+$("#month").val()+"'&start='"+$("#start").val()+"'&end='"+$("#end").val()+"'";//alert(d.SearchData);
+                d.SearchData = $("#customer_ledger").val();
+            }
+        },
+        "buttons": [
+            {
+                "extend": 'print',
+                "text": '<span class="fa fa-print"></span> Print',
+                "exportOptions": {
+                    "modifier": {
+                        "search": 'applied',
+                        "order": 'applied'
+                    }
+                },
+                "messageTop": function () {
+                    return '<center>'+current_fy+'</center>';
+                },
+                "messageBottom": null,
+                "title": function (){
+                    var customer_name = $('#customer_ledger option:selected').text();
+                    return '<center>'+customer_name+'</center>';
+                }
+            },
+            {
+                "extend": 'excel',
+                "text": '<span class="fa fa-file-excel-o"></span> Excel',
+                "exportOptions": {
+                    "modifier": {
+                        "search": 'applied',
+                        "order": 'applied'
+                    }
+                },
+                "messageTop": function () {
+                    return current_fy;
+                },
+                "title": function (){
+                    var customer_name = $('#customer_ledger option:selected').text();
+                    return customer_name;
+                },
+                "filename": function (){
+                    var customer_name = $('#customer_ledger option:selected').text();
+                    return customer_name+'_ledger';
+                }, 
+                "customize": function(xlsx){
+                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                    $('row a[r^="A"]', sheet).attr('s','2');
+                    $('row:first c', sheet).attr('s','51');
+                }
+            },
+            {
+                "extend": 'pdf',
+                "text": '<span class="fa fa-file-pdf-o"></span> PDF',
+                "exportOptions": {
+                    "modifier": {
+                        "search": 'applied',
+                        "order": 'applied'
+                    }
+                },
+                "messageTop": function () {
+                    return current_fy;
+                },
+                "title": function (){
+                    var customer_name = $('#customer_ledger option:selected').text();
+                    return customer_name;
+                },
+                "filename": function (){
+                    var customer_name = $('#customer_ledger option:selected').text();
+                    return customer_name+'_ledger';
+                },
+                "customize": function(doc) {
+                    doc.styles.tableHeader.alignment= 'center';
+                    doc.styles.message = {
+                        fontSize: '16',
+                        alignment: 'center'
+                    };
+                    doc.styles.title = {
+                        fontSize: '16',
+                        alignment: 'center'
+                    };
+                }  
+            }
+        ],
+        // other options
+    });
+    function createCellPos( n ){
+        var ordA = 'A'.charCodeAt(0);
+        var ordZ = 'Z'.charCodeAt(0);
+        var len = ordZ - ordA + 1;
+        var s = "";
+
+        while( n >= 0 ) {
+            s = String.fromCharCode(n % len + ordA) + s;
+            n = Math.floor(n / len) - 1;
+        }
+
+        return s;
+    }
+    $('#export_print').on('click', function(e) {
+            e.preventDefault();
+            ledger_table.button(0).trigger();
+    });
+    $('#export_excel').on('click', function(e) {
+            e.preventDefault();
+            ledger_table.button(1).trigger();
+    });
+    $('#export_pdf').on('click', function(e) {
+            e.preventDefault();
+            ledger_table.button(2).trigger();
+    });
+    $('#customer_ledger').on('change', function(){
+        $('.ledger_datatable').dataTable().api().ajax.reload();
+    });
     //Ckeditor 
     try{CKEDITOR.replace('editor1');}catch{}
     

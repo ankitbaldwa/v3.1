@@ -1381,7 +1381,10 @@
          float: right
      }
      .navbar-custom-menu>.navbar-nav>li {
-         position: static
+         position: static;
+     }
+     .navbar-custom-menu>.navbar-nav>.user-menu {
+         display: none;
      }
      .navbar-custom-menu>.navbar-nav>li>.dropdown-menu {
          position: absolute;
@@ -6043,12 +6046,31 @@ blockquote {
 }
 .gst-label{
     padding-top: 15px;
-    padding-bottom: 15px;
+    padding-right: 15px;
     line-height: 20px;
 }
 .gst-label .gst-text {
     color: #fff;
-    font-size: x-large;
+    font-size: small;
     cursor: pointer;
     text-align: center;
+}
+.current-year {
+    padding-top: 15px;
+    padding-right: 15px;
+    line-height: 20px;
+}
+.current-year label {
+    font-size: small;
+}
+.dt-buttons {
+    /* margin-bottom: -7px; */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+div.dt-buttons {
+    float: right !important;
 }

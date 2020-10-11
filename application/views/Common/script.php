@@ -29,6 +29,13 @@
 		<!-- DataTables -->
 		<script src="<?= base_url(); ?>assets/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 		<script src="<?= base_url(); ?>assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+                <script src="<?= base_url(); ?>assets/bower_components/datatables.net-bs/js/dataTables.buttons.min.js"></script>
+                <script src="<?= base_url(); ?>assets/bower_components/datatables.net-bs/js/jszip.min.js"></script>
+                <script src="<?= base_url(); ?>assets/bower_components/datatables.net-bs/js/pdfmake.min.js"></script>
+                <script src="<?= base_url(); ?>assets/bower_components/datatables.net-bs/js/vfs_fonts.js"></script>
+                <script src="<?= base_url(); ?>assets/bower_components/datatables.net-bs/js/buttons.html5.min.js"></script>
+                <script src="<?= base_url(); ?>assets/bower_components/datatables.net-bs/js/buttons.print.min.js"></script>
+                <link rel="stylesheet" href="<?= base_url(); ?>assets/bower_components/datatables.net-bs/css/buttons.dataTables.min.css"/>
 		<!-- CK Editor -->
 		<script src="<?= base_url(); ?>assets/bower_components/ckeditor/ckeditor.js"></script>
 		<!-- Select2 -->

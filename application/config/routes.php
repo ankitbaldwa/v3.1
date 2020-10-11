@@ -196,3 +196,5 @@ $route['city-update'] = "Mst_cities/update";
 $route['city-update-action'] = "Mst_cities/update_action";
 
 $route[RELEASE_NOTES] = "Welcome/release_notes";
+$route[LEDGER] = "Ledger/index";
+$route[LEDGER_AJAX] = "Ledger/ajax";

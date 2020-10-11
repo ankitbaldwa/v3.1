@@ -1,38 +1,31 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Welcome extends CI_Controller {
+class Welcome extends Admin_Parent {
 	public function __construct() {
-		parent::__construct();
-		// Load form helper library
-		$this->load->helper('form');
-		// Load form validation library
-		$this->load->library('form_validation');
-		// Load session library
-		$this->load->library('session');
-		//load file helper
-        $this->load->helper('file');
-		// Load database
-		$this->load->helper('security');
-		$this->load->model('Mymodel');
-		/** Load comapny details and database */
-		$this->company = get_company();
-		$this->db = load_db($this->company);
-		/** Load comapny details and database */
-		if(isset($this->session->userdata('logged_in')['id'])){
-			$login_name = $this->Mymodel->GetDataCount('users',array('username', 'last_login','profile'),"id='".$this->session->userdata('logged_in')['id']."'");
-			$setting_data = $this->Mymodel->GetDataArray('settings',"","user_id='".$this->session->userdata('logged_in')['id']."' and (name='Company Name' or name='Invoice_no' or name='GST Number')");
-                        if($setting_data[0]['name'] == 'Company Name')
-				define('LOGO',$setting_data[0]['value']);
-			if($setting_data[2]['name'] == 'Invoice_no')
-				define('LOGO_MINI', $setting_data[2]['value']);
-                        if($setting_data[1]['name'] == 'GST Number')
-				define('GST_NUMBER', $setting_data[1]['value']);
-			define('profile',$login_name->profile);
-			define('name',$login_name->username);
-			define('last_login',$login_name->last_login);
-			define('Id', $this->session->userdata('logged_in')['id']);
-		} 
+            parent::__construct();
+            // Load form helper library
+            $this->load->helper('form');
+            // Load form validation library
+            $this->load->library('form_validation');
+            // Load session library
+            $this->load->library('session');
+            //load file helper
+            $this->load->helper('file');
+            // Load database
+            $this->load->helper('security');
+            $this->load->model('Mymodel');
+            /** Load comapny details and database */
+            $this->company = get_company();
+            $this->db = load_db($this->company);
+            /** Load comapny details and database */
+            if(isset($this->session->userdata('logged_in')['id'])){
+                    $login_name = $this->Mymodel->GetDataCount('users',array('username', 'last_login','profile'),"id='".$this->session->userdata('logged_in')['id']."'");
+                    define('profile',$login_name->profile);
+                    define('name',$login_name->username);
+                    define('last_login',$login_name->last_login);
+                    define('Id', $this->session->userdata('logged_in')['id']);
+            } 
 	}
 	public function index()
 	{

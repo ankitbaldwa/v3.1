@@ -130,7 +130,6 @@
           </a>
 
         </li>
-
         <!--<li class="<?= ($this->uri->segment(1) == PURCHASE)?'active':'' ?>">
 
           <a href="<?= site_url(PURCHASE) ?>">
@@ -141,11 +140,11 @@
 
         </li>-->
 
-        <li class="<?= ($this->uri->segment(1) == INVOICES)?'active':'' ?>">
+        <li class="<?= ($this->uri->segment(1) == LEDGER)?'active':'' ?>">
 
-          <a href="<?= site_url(INVOICES) ?>">
+          <a href="<?= site_url(LEDGER) ?>">
 
-            <i class="fa fa-file-text-o"></i> <span>Sales Bills</span>
+            <i class="fa fa-file-text-o"></i> <span>Ledgers</span>
 
           </a>
 

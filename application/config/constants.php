@@ -213,3 +213,5 @@ define('TITLE','ACCORDANCE');
 define('BODY_CLASS','hold-transition skin-blue sidebar-mini fixed layout-fixed');
 define('MAINTANCE', false);
 define('RELEASE_NOTES','release-notes');
+define('LEDGER', 'ledger');
+define('LEDGER_AJAX','ledger-ajax');

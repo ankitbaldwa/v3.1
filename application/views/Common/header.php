@@ -20,8 +20,11 @@ if(!$this->session->userdata('logged_in')){
       
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
+            <li class="current-year">
+                <label class="label pull-right bg-green current-fy" data-toggle="tooltip" data-placement="bottom" title="Current FY"><?= CURENT_FY_YEAR ?></label>
+            </li>
             <li class="pull-left gst-label">
-                <span class="logo-sm gst-text" id="myInput"><?php echo GST_NUMBER; ?></span>
+                <span class="logo-sm gst-text" id="myInput" data-toggle="tooltip" data-placement="bottom" title="GST Number"><?php echo GST_NUMBER; ?></span>
             </li>
           <li class="dropdown user user-menu">
             <a href="javascript:void(0);" class="dropdown-toggle">

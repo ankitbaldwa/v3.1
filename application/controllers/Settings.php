@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Settings extends CI_Controller {
+class Settings extends Admin_Parent {
 
     function __construct()
     {
@@ -18,14 +18,7 @@ class Settings extends CI_Controller {
             define('name',$login_name->username);
             define('id',$this->session->userdata('logged_in')['id']);
             define('last_login',$login_name->last_login);
-            $setting_data = $this->Mymodel->GetDataArray('settings',"","user_id='".$this->session->userdata('logged_in')['id']."' and (name='Company Name' or name='Invoice_no' or name='GST Number')");
-                        if($setting_data[0]['name'] == 'Company Name')
-				define('LOGO',$setting_data[0]['value']);
-			if($setting_data[2]['name'] == 'Invoice_no')
-				define('LOGO_MINI', $setting_data[2]['value']);
-                        if($setting_data[1]['name'] == 'GST Number')
-				define('GST_NUMBER', $setting_data[1]['value']);
-			define('profile',$login_name->profile);
+            define('profile',$login_name->profile);
         } else {
             redirect(LOGIN);
         }
