@@ -246,4 +246,13 @@ class Mymodel extends CI_Model
         $this->db->group_by('U.id');
         return $this->db->get()->result();
     }
+    public function Customer_pay_balance($table){
+        $feilds = array('U.id','CONCAT(`U`.`FirstName`," ", `U`.`LastName`) AS name', 'U.GST_No', ' sum(p.payed_amount) as total_payment_received');
+        $this->db->select($feilds);
+        $this->db->from($table);
+        $this->db->join('`customers` `U`', " `U`.`id` = `p`.`customer_id`",'LEFT');
+        $this->db->where("`p`.`payment_date` <= '2020-03-31'");
+        $this->db->group_by('U.id');
+        return $this->db->get()->result();
+    }
 }
