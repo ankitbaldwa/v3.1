@@ -44,25 +44,21 @@ class Migration extends CI_Controller {
             $database = switch_db_dinamico($db->company_db_database, $db->company_db_host, $db->company_db_username, $db->comapny_db_password);
             $this->db = $this->load->database($database, TRUE);
 
-            $cus_data = $this->Mymodel->Customer_balance('customers U');
-            //print_r($cus_data);exit;
-            foreach($cus_data as $cust){
-                if($cust->balance_amount != ''){
-                    $balance = $cust->balance_amount;
-                } else {
-                    $balance = 0;
-                }
+            $cus_inv_data = $this->Mymodel->Customer_inv_balance('`invoice` i');
+            //print_r($this->db->last_query());
+            foreach($cus_inv_data as $key => $value1) {
+                $balance = $value1->net_amount - $value1->total_payment_received;
                 $cust_arr = array(
                     'Type' => 'Dr',
                     'Opening_balance' => $balance,
                     'Balance_as_on' => date('Y-m-d', strtotime('2020-04-01')),
                     'Modified' => date('Y-m-d H:i:s')
                 );
-                $create = $this->Mymodel->SaveData('customers',$cust_arr,"id=".$cust->id);
+                $create = $this->Mymodel->SaveData('customers',$cust_arr,"id=".$value1->id);
                 $user_id = $this->Mymodel->GetData('users',"role='User'");
                 $ledger_data = array(
                     'user_id' => $user_id->id,
-                    'customer_id' => $cust->id,
+                    'customer_id' => $value1->id,
                     'transaction_date' => date('Y-m-d', strtotime('2020-04-01')),
                     'narration' => "Opening Balance",
                     'balance_amount' => $balance,

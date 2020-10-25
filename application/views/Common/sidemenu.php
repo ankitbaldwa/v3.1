@@ -139,6 +139,15 @@
           </a>
 
         </li>-->
+        <li class="<?= ($this->uri->segment(1) == INVOICES)?'active':'' ?>">
+
+          <a href="<?= site_url(INVOICES) ?>">
+
+            <i class="fa fa-file-text-o"></i> <span>Sales Bills</span>
+
+          </a>
+
+        </li>
 
         <li class="<?= ($this->uri->segment(1) == LEDGER)?'active':'' ?>">
 

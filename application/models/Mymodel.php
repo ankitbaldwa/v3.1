@@ -237,11 +237,12 @@ class Mymodel extends CI_Model
         $this->db->group_by($group);
         return $this->db->get()->result();
     }
-    public function Customer_balance($table){
-        $feilds = array('U.id','U.FirstName', 'U.LastName', 'U.GST_No', 'sum(i.Balance_Amount) as balance_amount');
+    public function Customer_inv_balance($table){
+        $feilds = array('U.id','CONCAT(`U`.`FirstName`," ", `U`.`LastName`) AS name', 'U.GST_No', 'sum(i.Netammount) as net_amount', "(SELECT sum(p.payed_amount) FROM `invoice_payments` `p` WHERE `p`.`payment_date` <= '2020-03-31' AND p.customer_id = U.id) as total_payment_received");
         $this->db->select($feilds);
         $this->db->from($table);
-        $this->db->join('invoice i', "U.id = i.Customer_id AND i.Status != 'Cancelled' AND i.invoice_date <= '2020-03-31'",'LEFT');
+        $this->db->join('`customers` `U`', "`i`.`Customer_id` = `U`.`id`",'LEFT');
+        $this->db->where("`i`.`Status` != 'Cancelled' AND `i`.`invoice_date` <= '2020-03-31'");
         $this->db->group_by('U.id');
         return $this->db->get()->result();
     }
