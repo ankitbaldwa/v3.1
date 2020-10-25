@@ -20,6 +20,18 @@ class Mymodel extends CI_Model
         $this->db->group_by($group);
         return $this->db->get($table)->row();
     }
+    public function GetDataDB($db, $table,$condition='',$order='',$group='',$limit='')
+    {
+        if($condition != '')
+        $db->where($condition);
+        if($order != '')
+        $db->order_by($order);
+        if($limit != '')
+        $db->limit($limit);
+        if($group != '')
+        $db->group_by($group);
+        return $db->get($table)->row();
+    }
     public function getReleaseNoteData($db, $table,$condition='',$order='',$group='',$limit=''){
         $db->select('r.id, r.version, r.release_notes, r.status, p.name, r.release_notes_pdf, r.key_points, r.created');
         $db->from($table);
@@ -91,6 +103,25 @@ class Mymodel extends CI_Model
             $return =  $this->db->get($table)->row_array();
         }else{
             $return =  $this->db->get($table)->result_array();
+        }
+        return $return;
+    }
+    public function GetDataArrayDB($db, $table,$field='',$condition='',$group='',$order='',$limit='',$result=''){
+        if($field != '')
+        $db->select($field);
+        if($condition != '')
+        $db->where($condition);
+        if($order != '')
+        $db->order_by($order);
+        if($limit != '')
+        $db->limit($limit);
+        if($group != '')
+        $db->group_by($group);
+        if($result != '')
+        {
+            $return =  $db->get($table)->row_array();
+        }else{
+            $return =  $db->get($table)->result_array();
         }
         return $return;
     }
@@ -243,15 +274,6 @@ class Mymodel extends CI_Model
         $this->db->from($table);
         $this->db->join('`customers` `U`', "`i`.`Customer_id` = `U`.`id`",'LEFT');
         $this->db->where("`i`.`Status` != 'Cancelled' AND `i`.`invoice_date` <= '2020-03-31'");
-        $this->db->group_by('U.id');
-        return $this->db->get()->result();
-    }
-    public function Customer_pay_balance($table){
-        $feilds = array('U.id','CONCAT(`U`.`FirstName`," ", `U`.`LastName`) AS name', 'U.GST_No', ' sum(p.payed_amount) as total_payment_received');
-        $this->db->select($feilds);
-        $this->db->from($table);
-        $this->db->join('`customers` `U`', " `U`.`id` = `p`.`customer_id`",'LEFT');
-        $this->db->where("`p`.`payment_date` <= '2020-03-31'");
         $this->db->group_by('U.id');
         return $this->db->get()->result();
     }
