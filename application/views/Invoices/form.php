@@ -324,7 +324,7 @@
 
                                 <div class="col-md-9 text-right">
 
-                                  <input type="checkbox" id="isIGST" data-company-gstin="<?= $company_gstin ?>" readonly/>
+                                  <input type="checkbox" id="isIGST" data-company-gstin="<?= $company_gstin ?>" disabled/>
 
                                   <label for="igst">IGST (<span id="IGST_per"><?= $IGST_per ?></span>%)</label>
 
