@@ -123,7 +123,7 @@ class Invoices_model extends CI_Model
 
     public function GetInvcData($table, $condition = '', $order = '', $group = '', $limit = '')
     {
-        $feilds = array('i.id', 'c.FirstName', 'c.LastName','c.Address','c.City','c.State','c.Country', 'c.Zip','c.GST_No','c.Email','c.Mobile', 'u.username', 'i.State_code','i.invoice_no', 'i.invoice_date','i.Lorry_no','i.waybill','i.Place','i.Gross_amount','i.Additional_amount','i.CGST_percentage','i.SGST_percentage','i.IGST_percentage','i.CESS_value','i.TCS_percentage','i.CGST','i.SGST','i.IGST','i.CESS','i.TCS', 'i.Roundoff','i.Netammount', 'i.Balance_Amount','i.Timestamp', 'i.Status','i.user_id','i.waybill_file','i.Qr_code');
+        $feilds = array('i.id', 'c.FirstName', 'c.LastName','c.Address','c.City','c.State','c.Country', 'c.Zip','c.GST_No','c.Email','c.Mobile', 'u.username', 'i.State_code','i.invoice_no', 'i.invoice_date','i.Lorry_no','i.waybill','i.Place','i.Gross_amount','i.Additional_amount','i.CGST_percentage','i.SGST_percentage','i.IGST_percentage','i.CESS_value','i.TCS_percentage','i.CGST','i.SGST','i.IGST','i.CESS','i.TCS', 'i.Roundoff','i.Netammount', 'i.Balance_Amount','i.Timestamp', 'i.Status','i.user_id','i.waybill_file','i.Qr_code', 'i.company_code');
         $this->db->select($feilds);
         $this->db->from($table);
         $this->db->join('customers c', 'i.Customer_id = c.id');

@@ -88,7 +88,7 @@
                     </td>
                     <td rowspan="3" class="w11 border-left-1-white text-center">
                         <?php if($data->Qr_code != ""){ ?>
-                          <?php $company_code = $this->session->userdata('logged_in')['company_code']; ?>
+                          <?php //$company_code = $this->session->userdata('logged_in')['company_code']; ?>
                             <img src="<?= base_url() ?>/assets/Qr_code/<?= $company_code.'/'.$data->Qr_code ?>" style="width:10%;margin-top: 1px;"/>
                         <?php } ?>
                     </td>

@@ -10,7 +10,7 @@ class Migration extends CI_Controller {
         $this->load->library('session');
     }
     public function index(){
-        $this->db->query('ALTER TABLE `release_notes` ADD `key_points` TEXT NOT NULL AFTER `release_notes_pdf`;');
+       // $this->db->query('ALTER TABLE `release_notes` ADD `key_points` TEXT NOT NULL AFTER `release_notes_pdf`;');
         /** Dynamic Database Connection starts here */
         $get_all_db = $this->Mymodel->GetDataAllRecords('subscription');
         foreach($get_all_db as $db){
@@ -18,7 +18,8 @@ class Migration extends CI_Controller {
             $this->db = $this->load->database($database, TRUE);
             //$this->create_table($db->company_db_database);
             //$this->alter_table($db->company_db_database);
-            $this->customer_alter_table($db->company_db_database);
+            //$this->customer_alter_table($db->company_db_database);
+            $this->alter_invoice_table($db->company_db_database, $db->company_code);
         }
         /** Dynamic Database Connection starts here */
     }
@@ -37,6 +38,11 @@ class Migration extends CI_Controller {
         $this->db->query($sql);
         $sql2 = "ALTER TABLE $database.`users` ADD `release_note_flag` INT NOT NULL DEFAULT '0' AFTER `profile`;";
         $this->db->query($sql2);
+    }
+    public function alter_invoice_table($database, $company_code){
+        $sql = "ALTER TABLE $database.`invoice` ADD `company_code` VARCHAR(255) NOT NULL AFTER `State_code`;";
+        $this->db->query($sql);
+        $this->Mymodel->SaveData($database.'invoice', array('company_code'=> $company_code), "Status != 'Cancelled'" );
     }
     public function update_op_balance_customer(){
         $get_all_db = $this->Mymodel->GetDataAllRecords('subscription');

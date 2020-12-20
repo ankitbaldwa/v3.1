@@ -184,6 +184,7 @@ class Invoices extends Admin_Parent {
         $data = array(
             'user_id'=>$_POST['user_id'],
             'Customer_id'=>$_POST['Customer_id'],
+            'company_code' => $company_code,
             'invoice_no'=>$_POST['invoice_no'],
             'invoice_date'=>date('Y-m-d', strtotime(str_replace('-', '/', $_POST['invoice_date']))),
             'Lorry_no'=>$_POST['Lorry_no'],
@@ -667,7 +668,8 @@ class Invoices extends Admin_Parent {
                 'user_data'=>$user_data,
                 'invoice_details'=>$data2,
                 'settings' => $data3,
-                'bank_details' => $data4
+                'bank_details' => $data4,
+                'company_code' => $data->company_code
             );
         $this->load->view('Invoices/pdf', $data); 
         $mpdf_html = $this->load->view('Invoices/pdf', '', true);
@@ -726,21 +728,33 @@ class Invoices extends Admin_Parent {
             );
         $this->load->view('Invoices/pdf', $data); 
         $mpdf_html = $this->load->view('Invoices/pdf', '', true);
-        tcpdf();
-        $obj_pdf = new TCPDF('P','mm', 'A4', true, 'UTF-8', false);
-        $obj_pdf->SetCreator(PDF_CREATOR);
+        mpdf();
+        $obj_pdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-P',
+            'orientation' => 'P',
+            'setAutoTopMargin' => 'stretch',
+            'autoMarginPadding' => 0,
+            'bleedMargin' => 0,
+            'crossMarkMargin' => 0,
+            'cropMarkMargin' => 0,
+            'nonPrintMargin' => 0,
+            'margBuffer' => 0,
+            'collapseBlockMargins' => false,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+        ]);
         $title = $data['data']->invoice_no;
         $obj_pdf->SetTitle($title);
-        $obj_pdf->SetHeaderMargin(0);
+        $obj_pdf->SetFont('DejaVuSans');
         $obj_pdf->SetFont('times', '', 10);
-        $obj_pdf->setFontSubsetting(false);
         $obj_pdf->AddPage();
-        // set cell padding
-        $obj_pdf->setCellPaddings(0, 0, 0, 0);
-        // set cell margins
-        $obj_pdf->setCellMargins(0, 0, 0, 0);
         // we can have any view part here like HTML, PHP etc
-        $obj_pdf->writeHTML($mpdf_html, true, false, true, false, '');
+        $obj_pdf->WriteHTML($mpdf_html);
         // output the HTML content
         $obj_pdf->Output(FCPATH.'assets/upload/'.str_replace("/","_",$data['data']->invoice_no).'_'.date('d_M_y').'.pdf', 'F');
         $fileatt = FCPATH.'assets/upload/'.str_replace("/","_",$data['data']->invoice_no).'_'.date('d_M_y').'.pdf';
