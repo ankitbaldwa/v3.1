@@ -389,24 +389,31 @@ $(function () {
         });
       }
     }, '.product');
+    var date = new Date();
+    var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     //Invoice Date Picker
     $('#inv_date').datepicker({
-      autoclose: true
+      autoclose: true,
+      todayHighlight: true,
     });
     //Receipt Date Picker
     $('#rec_date').datepicker({
-      autoclose: true
+      autoclose: true,
+      todayHighlight: true,
     });
     //Voucher Date Picker
     $('#voucher_date').datepicker({
-      autoclose: true
+      autoclose: true,
+      todayHighlight: true,
     });
     //For Bank Cheque Date
     $("#cheque_date").datepicker({
       autoclose: true,
       endDate: "+2M",
-      startDate: "-2M"
+      startDate: "-2M",
+      todayHighlight: true,
     });
+    $('#inv_date,#rec_date,#voucher_date,#cheque_date').datepicker('setDate', today);
     //Common Server Side Data Table for all list Pages
     $('.example_datatable').DataTable({
         // Processing indicator
