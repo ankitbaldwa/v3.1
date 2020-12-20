@@ -42,7 +42,7 @@ class Migration extends CI_Controller {
     public function alter_invoice_table($database, $company_code){
         $sql = "ALTER TABLE $database.`invoice` ADD `company_code` VARCHAR(255) NOT NULL AFTER `State_code`;";
         $this->db->query($sql);
-        $this->Mymodel->SaveData($database.'invoice', array('company_code'=> $company_code), "Status != 'Cancelled'" );
+        $this->Mymodel->SaveData('invoice', array('company_code'=> $company_code), "Status != 'Cancelled'" );
     }
     public function update_op_balance_customer(){
         $get_all_db = $this->Mymodel->GetDataAllRecords('subscription');
