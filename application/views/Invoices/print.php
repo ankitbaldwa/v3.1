@@ -394,7 +394,7 @@
                           <b>Company's Bank Details</b><br/>
                           <b>Bank Name:</b> <?= $bank->bank_name?><br/>
                           <b>A/c No.:</b> <?= $bank->account_no?><br/> 
-                          <b>Branch & IFS Code:</b> <?= $bank->branch ?> & <?= $bank->IFC_code ?><br/>
+                          <b>Branch & IFS Code:</b> <small><?= $bank->branch ?> & <?= $bank->IFC_code ?></small><br/>
                         </td>
                       <?php } ?>
                     <?php } ?>
