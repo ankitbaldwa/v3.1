@@ -724,7 +724,8 @@ class Invoices extends Admin_Parent {
                 'user_data'=>$user_data,
                 'invoice_details'=>$data2,
                 'settings' => $data3,
-                'bank_details' => $data4
+                'bank_details' => $data4,
+                'company_code' => $data->company_code
             );
         $this->load->view('Invoices/pdf', $data); 
         $mpdf_html = $this->load->view('Invoices/pdf', '', true);
