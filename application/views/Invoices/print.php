@@ -99,7 +99,7 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body onload="window.print();" style="line-height:1.4 !important;">
+<body onload="window.print();" style="line-height:1.3 !important;">
     <table class="border-0 w-100-per" cellspacing="0" cellpadding="0">
       <tbody>
           <tr>
@@ -385,7 +385,7 @@
           </tr>
           <tr>
             <td>
-              <table style="border: 0px solid #fff;" cellspacing="0" cellpadding="0">
+              <table style="border: 0px solid #fff;line-height: 1;" cellspacing="0" cellpadding="0">
                   <tbody>
                     <tr style="text-align: left;">
                     <?php foreach($bank_details as $bank ){ ?>
@@ -394,7 +394,7 @@
                           <b>Company's Bank Details</b><br/>
                           <b>Bank Name:</b> <?= $bank->bank_name?><br/>
                           <b>A/c No.:</b> <?= $bank->account_no?><br/> 
-                          <b>Branch & IFS Code:</b> <small><?= $bank->branch ?> & <?= $bank->IFC_code ?></small><br/>
+                          <b>Branch & IFS Code:</b> <?= $bank->branch ?> & <?= $bank->IFC_code ?><br/>
                         </td>
                       <?php } ?>
                     <?php } ?>

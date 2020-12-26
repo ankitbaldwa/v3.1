@@ -5,17 +5,26 @@ class Custom{
 	public $CI;
     public function __contruct($params =array())
     {
+        $this->CI =& get_instance();
         $this->CI->config->item('base_url');
         $this->CI->load->helper('url');
         $this->CI->load->database();
-        $this->CI->library('session');
-        $this->CI->library('email');
-        $this->CI =& get_instance();
+        $this->CI->load->library('email');
     }
     function sendEmailSmtp($subject,$body_email,$to,$attachment='',$company =array(),$attachment2='')
     {
         $this->CI =& get_instance();
-        $this->CI->load->library('email');
+        $config['protocol']    = 'smtp';
+		$config['smtp_host']    = 'mail.accordance.co.in';
+		$config['smtp_port']    = '587';
+		$config['smtp_timeout'] = '7';
+		$config['smtp_user']    = 'no-reply@accordance.co.in';
+		$config['smtp_pass']    = 'Password@1992';
+		$config['charset']    = 'utf-8';
+		$config['newline']    = "\r\n";
+		$config['mailtype'] = 'html'; // or html
+        $config['validation'] = TRUE; // bool whether to validate email or not   
+        $this->CI->email->initialize($config);   
         $this->CI->email->from($company[0],$company[1]);
         $this->CI->email->reply_to($company[0],$company[1]);
         $this->CI->email->to($to);

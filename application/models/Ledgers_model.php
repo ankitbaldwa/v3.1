@@ -7,16 +7,17 @@ class Ledgers_model extends CI_Model
     
     var $column_order = array('l.id', 'l.transaction_date', 'l.dr_amount', 'l.cr_amount', 'l.balance_amount', 'i.invoice_no', "CONCAT(c.FirstName,' ',c.LastName) as name", "p.receipt_no", "p.payment_type"); //set column field database for datatable orderable
     var $column_search = array('l.id', 'l.transaction_date', 'l.dr_amount', 'l.cr_amount', 'l.balance_amount', 'i.invoice_no', "CONCAT(c.FirstName,' ',c.LastName) as name", "p.receipt_no", "p.payment_type"); //set column field database for datatable searchable 
-    var $order = array(array('l.transaction_date' => 'ASC'), array('p.id' => 'ASC'));
+    var $order = array(array('l.transaction_date' => 'DESC'), array('p.id' => 'ASC'));
     
     function __construct()
     {
         parent::__construct();
     }
     
-    private function _get_datatables_query($table, $condition)
+    /** SELECT id, customer_id, transaction_date, dr_amount, cr_amount, COALESCE(((SELECT SUM(b.dr_amount) FROM ledger b WHERE b.transaction_date <= l.transaction_date AND l.customer_id = '4') - (SELECT SUM(b.cr_amount) FROM ledger b WHERE b.transaction_date <= l.transaction_date AND l.customer_id = '4')), 0) as balance, narration FROM ledger l WHERE l.customer_id = '4' ORDER BY l.transaction_date DESC */
+    private function _get_datatables_query($table, $condition, $customer_id)
     {
-        $feilds = array('l.id', 'l.transaction_date', 'l.dr_amount', 'l.cr_amount', 'l.balance_amount', 'i.invoice_no', "CONCAT(c.FirstName,' ',c.LastName) as name", "p.receipt_no", "p.payment_type");
+        $feilds = array('l.id', 'l.transaction_date', 'l.dr_amount', 'l.cr_amount', 'COALESCE(((SELECT SUM(b.dr_amount) FROM ledger b WHERE b.transaction_date <= l.transaction_date AND l.customer_id = '.$customer_id.') - (SELECT SUM(b.cr_amount) FROM ledger b WHERE b.transaction_date <= l.transaction_date AND l.customer_id = '.$customer_id.')), 0) as balance', 'l.balance_amount', 'i.invoice_no', "CONCAT(c.FirstName,' ',c.LastName) as name", "p.receipt_no", "p.payment_type");
         $this->db->select($feilds);
         $this->db->from($table);
         $this->db->join('invoice i', "i.id = l.invoice_id",'LEFT');
@@ -47,31 +48,31 @@ class Ledgers_model extends CI_Model
         }
     }
     
-    function get_datatables($table, $condition = '')
+    function get_datatables($table, $condition = '', $customer_id)
     {
         if (!empty($condition))
             $this->db->where($condition);
-        $this->_get_datatables_query($table, $condition);
+        $this->_get_datatables_query($table, $condition, $customer_id);
         if ($_POST['length'] != -1)
             $this->db->limit($_POST['length'], $_POST['start']);
         $query = $this->db->get();
         return $query->result();
     }
     
-    public function count_all($table, $condition = '')
+    public function count_all($table, $condition = '', $customer_id)
     {
         if (!empty($condition))
             $this->db->where($condition);
-        $this->_get_datatables_query($table, $condition);
+        $this->_get_datatables_query($table, $condition, $customer_id);
         return $this->db->count_all_results();
     }
     
     
-    function count_filtered($table, $condition = '')
+    function count_filtered($table, $condition = '', $customer_id)
     {
         if (!empty($condition))
             $this->db->where($condition);
-        $this->_get_datatables_query($table, $condition);
+        $this->_get_datatables_query($table, $condition, $customer_id);
         $query = $this->db->get();
         return $query->num_rows();
     }

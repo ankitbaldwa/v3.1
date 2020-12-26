@@ -1055,24 +1055,36 @@ class Reports extends Admin_Parent {
             );
         $this->load->view('Invoices/pdf', $data); 
         $mpdf_html = $this->load->view('Invoices/pdf', '', true);
-        tcpdf();
-        $obj_pdf = new TCPDF('P','mm', 'A4', true, 'UTF-8', false);
-        $obj_pdf->SetCreator(PDF_CREATOR);
+        mpdf();
+        $obj_pdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-P',
+            'orientation' => 'P',
+            'setAutoTopMargin' => 'stretch',
+            'autoMarginPadding' => 0,
+            'bleedMargin' => 0,
+            'crossMarkMargin' => 0,
+            'cropMarkMargin' => 0,
+            'nonPrintMargin' => 0,
+            'margBuffer' => 0,
+            'collapseBlockMargins' => false,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+        ]);
         $title = $data['data']->invoice_no;
         $obj_pdf->SetTitle($title);
-        $obj_pdf->SetHeaderMargin(0);
+        $obj_pdf->SetFont('DejaVuSans');
         $obj_pdf->SetFont('times', '', 10);
-        $obj_pdf->setFontSubsetting(false);
         $obj_pdf->AddPage();
-        // set cell padding
-        $obj_pdf->setCellPaddings(0, 0, 0, 0);
-        // set cell margins
-        $obj_pdf->setCellMargins(0, 0, 0, 0);
         // we can have any view part here like HTML, PHP etc
-        $obj_pdf->writeHTML($mpdf_html, true, false, true, false, '');
+        $obj_pdf->WriteHTML($mpdf_html);
         // output the HTML content
-        $obj_pdf->Output(FCPATH.'assets/upload/'.str_replace("/","_",$data['data']->invoice_no).'_'.date('d_M_y').'.pdf', 'F');
         $fileatt = FCPATH.'assets/upload/'.str_replace("/","_",$data['data']->invoice_no).'_'.date('d_M_y').'.pdf';
+        $obj_pdf->Output($fileatt, 'F');
         $subject = $mail->subject;
         $mail_body = $mail->body;
         $subject = str_replace("{{invoice_no}}",$data['data']->invoice_no,$subject);
@@ -1085,17 +1097,22 @@ class Reports extends Admin_Parent {
         $mail_body = str_replace("{{amount_words}}",convert_number($data['data']->Netammount),$mail_body);
         $mail_body = str_replace("{{bill_date}}",date('d-M-Y', strtotime($data['data']->invoice_date)),$mail_body);
         $mail_body = str_replace("{{conpany_name}}",$data['settings'][0]->value,$mail_body);
-        if($data['data']->Email != ''){
-            $email = array($user_data->email,$data['data']->Email);
+        if($_SERVER['HTTP_HOST'] == 'localhost'){
+            $email = array('ankitbaldwa1992@gmail.com');
         } else {
-            $email = array($user_data->email);
+            if($data['data']->Email != ''){
+                $email = array($user_data->email,$data['data']->Email);
+            } else {
+                $email = array($user_data->email);
+            }
         }
         if($data['data']->waybill_file != ''){
             $waybill = FCPATH.'assets/upload/sales_waybill_pdf/'.$data['data']->waybill_file;
         } else {
             $waybill = "";
         }
-        $this->custom->sendEmailSmtp($subject,$mail_body,$email,$fileatt, array($data['settings'][12]->value,$data['settings'][0]->value), $waybill);
+        //print_r($waybill);exit;
+        $this->custom->sendEmailSmtp($subject,$mail_body,$email,$fileatt,array($data['settings'][12]->value,$data['settings'][0]->value), $waybill);
         //redirect(INVOICES);
         redirect(INVOICES_VIEW.'/'.enc_dec(1, $id));
     }

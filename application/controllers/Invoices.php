@@ -756,8 +756,8 @@ class Invoices extends Admin_Parent {
         // we can have any view part here like HTML, PHP etc
         $obj_pdf->WriteHTML($mpdf_html);
         // output the HTML content
-        $obj_pdf->Output(FCPATH.'assets/upload/'.str_replace("/","_",$data['data']->invoice_no).'_'.date('d_M_y').'.pdf', 'F');
         $fileatt = FCPATH.'assets/upload/'.str_replace("/","_",$data['data']->invoice_no).'_'.date('d_M_y').'.pdf';
+        $obj_pdf->Output($fileatt, 'F');
         $subject = $mail->subject;
         $mail_body = $mail->body;
         $subject = str_replace("{{invoice_no}}",$data['data']->invoice_no,$subject);

@@ -35,7 +35,7 @@ class Ledger extends Admin_Parent {
     public function ajax(){
         $table = "ledger l";
         $cond = "l.customer_id = ".$_POST['SearchData']."";
-        $userData=$this->Ledgers_model->get_datatables($table,$cond);
+        $userData=$this->Ledgers_model->get_datatables($table,$cond, $_POST['SearchData']);
         //print_r($this->db->last_query());exit;
         $data = array();
         $ref = "";
@@ -59,13 +59,13 @@ class Ledger extends Admin_Parent {
             $nestedData[] = $ref;
             $nestedData[] = ($usersData->dr_amount !='')?"<i class='fa fa-inr'></i> ".moneyFormatIndia($usersData->dr_amount):'N/A';
             $nestedData[] = ($usersData->cr_amount !='')?"<i class='fa fa-inr'></i> ".moneyFormatIndia($usersData->cr_amount):'N/A';
-            $nestedData[] = ($usersData->balance_amount < 0)?"<span class='text-danger'><i class='fa fa-inr'></i> ".moneyFormatIndia($usersData->balance_amount)." Cr.</span>":"<i class='fa fa-inr'></i> ".moneyFormatIndia($usersData->balance_amount);
+            $nestedData[] = ($usersData->balance < 0)?"<span class='text-danger'><i class='fa fa-inr'></i> ".moneyFormatIndia($usersData->balance)." Cr.</span>":"<i class='fa fa-inr'></i> ".moneyFormatIndia($usersData->balance);
             $data[] = $nestedData;
         }
         $output = array(
                     "draw" => $_POST['draw'],
-                    "recordsTotal" => $this->Ledgers_model->count_all($table,$cond),
-                    "recordsFiltered" => $this->Ledgers_model->count_filtered($table,$cond),
+                    "recordsTotal" => $this->Ledgers_model->count_all($table,$cond, $_POST['SearchData']),
+                    "recordsFiltered" => $this->Ledgers_model->count_filtered($table,$cond, $_POST['SearchData']),
                     "data" => $data,
                 );
         echo json_encode($output);
