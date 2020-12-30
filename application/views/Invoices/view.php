@@ -314,11 +314,11 @@
                             <span class="text text-danger" id="err_waybill_pdf"></span>
                             </form>
                         <?php } else { ?>
-                        <a href="<?= base_url() ?>assets/upload/sales_waybill_pdf/<?= $data->waybill_file ?>" class="btn btn-info pull-right btn-sm btn-flat" id="view_waybill" target="_blank"><i class="fa fa-file-pdf-o fa-3"></i></a>
+                        <a data-waybill-path="<?= base_url() ?>assets/upload/sales_waybill_pdf/<?= $data->waybill_file ?>" data-title="E Way Bill" class="btn btn-info pull-right btn-sm btn-flat view-bill" id="view_waybill"><i class="fa fa-file-pdf-o fa-3"></i></a>
                         <?php } ?>
                         </div>
 
-                        <a href="<?= site_url(INVOICES_PDF.'/'.enc_dec(1,$data->id))?>" class="btn btn-primary pull-right btn-sm btn-flat" style="margin-right: 5px;">
+                        <a data-waybill-path="<?= site_url(INVOICES_PDF.'/'.enc_dec(1,$data->id))?>" data-title="Invoice No. -  <?= $data->invoice_no ?>" class="view-bill btn btn-primary pull-right btn-sm btn-flat" style="margin-right: 5px;">
 
                           <i class="fa fa-download"></i> Generate PDF
 
@@ -356,7 +356,22 @@
   <?php $this->load->view('Common/footer'); ?>
 
 </div>
-
+<style>
+    .iframe-container {    
+        padding-bottom: 60%;
+        padding-top: 30px; height: 0; overflow: hidden;
+    }
+    
+    .iframe-container iframe,
+    .iframe-container object,
+    .iframe-container embed {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
 <!-- ./wrapper -->
 <script>
 

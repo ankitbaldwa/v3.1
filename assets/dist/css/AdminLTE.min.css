@@ -3716,8 +3716,12 @@
      font-weight: 300;
      padding-top: 5px;
      text-transform: uppercase;
+     color: #fff;
  }
- 
+ .login-box img {
+     text-align: center;
+     width: 100%;
+ }
  .login-logo a,
  .register-logo a {
      color: #444
@@ -3726,15 +3730,17 @@
  .login-page,
  .register-page {
      background: #d2d6de;
-     background-image: url("../../img/login-background.png");
-     background-size: 100% Auto;
+     background-image: url('../../img/cracker.gif'), url('../../img/cracker2.gif'), url('../../img/people.gif'), url('../../img/new-year-bottom-bg.svg'), url('../../img/signIn-bg2.svg');
     background-repeat: no-repeat;
+    background-position: left, right, bottom, bottom, center;
+    background-size: contain, contain, contain, contain, cover;
  }
  
  .login-box,
  .register-box {
     width: 360px;
-    margin: 15% auto 10%;
+    margin: 10% auto 10%;
+    text-align: center;
  }
  
  @media (max-width:768px) {
@@ -3760,10 +3766,14 @@
 @media (min-width: 768px) and (max-width: 991px) {
 
     body {
-        background: #d2d6de !important;
+        /*background: #d2d6de !important;
         background-image: none !important;
         background-size: 100% Auto !important;
+        background-repeat: no-repeat !important;*/
+        background-image: url('../../img/cracker.gif'), url('../../img/cracker2.gif'), url('../../img/people.gif'), url('../../img/new-year-bottom-bg.svg'), url('../../img/signIn-bg2.svg') !important;
         background-repeat: no-repeat !important;
+        background-position: left, right, bottom, bottom, center !important;
+        background-size: contain, contain, contain, contain, cover !important;
     }
 
 }
@@ -3772,10 +3782,14 @@
 @media (max-width: 767px) {
 
     body {
-        background: linear-gradient(to right, #D3E8FA 0%, #D3E8FA 50%, #D3E8FA 100%) !important;
+        /*background: linear-gradient(to right, #D3E8FA 0%, #D3E8FA 50%, #D3E8FA 100%) !important;*/
         /*background-image: none !important;*/
-        background-size: 100% Auto !important;
+        /*background-size: 100% Auto !important;
+        background-repeat: no-repeat !important;*/
+        background-image: url('../../img/cracker.gif'), url('../../img/cracker2.gif'), url('../../img/people.gif'), url('../../img/new-year-bottom-bg.svg'), url('../../img/signIn-bg2.svg') !important;
         background-repeat: no-repeat !important;
+        background-position: left, right, bottom, bottom, center !important;
+        background-size: contain, contain, contain, contain, cover !important;
      }
      .login {
         border-radius: 50% !important;
@@ -3792,10 +3806,14 @@
 @media (max-width: 768px) {
 
     body {
-        background: linear-gradient(to right, #D3E8FA 0%, #D3E8FA 50%, #D3E8FA 100%) !important;
+        /*background: linear-gradient(to right, #D3E8FA 0%, #D3E8FA 50%, #D3E8FA 100%) !important;*/
         /*background-image: none !important;*/
-        background-size: 100% Auto !important;
+        /*background-size: 100% Auto !important;
+        background-repeat: no-repeat !important;*/
+        background-image: url('../../img/cracker.gif'), url('../../img/cracker2.gif'), url('../../img/people.gif'), url('../../img/new-year-bottom-bg.svg'), url('../../img/signIn-bg2.svg') !important;
         background-repeat: no-repeat !important;
+        background-position: left, right, bottom, bottom, center !important;
+        background-size: contain, contain, contain, contain, cover !important;
      }
      .login {
         border-radius: 0% !important;
@@ -3803,15 +3821,19 @@
         border-color: #6D5DC3 !important;
      }
      .login-box, .register-box {
-        width: 70% !important;
+        width: 55% !important;
      }
 }
 @media (max-width: 1199px) and (min-width: 992px){
     body {
-        background: linear-gradient(to right, #D3E8FA 0%, #D3E8FA 50%, #D3E8FA 100%) !important;
+        /*background: linear-gradient(to right, #D3E8FA 0%, #D3E8FA 50%, #D3E8FA 100%) !important;*/
         /*background-image: none !important;*/
-        background-size: 100% Auto !important;
+        /*background-size: 100% Auto !important;
+        background-repeat: no-repeat !important;*/
+        background-image: url('../../img/cracker.gif'), url('../../img/cracker2.gif'), url('../../img/people.gif'), url('../../img/new-year-bottom-bg.svg'), url('../../img/signIn-bg2.svg') !important;
         background-repeat: no-repeat !important;
+        background-position: left, right, bottom, bottom, center !important;
+        background-size: contain, contain, contain, contain, cover !important;
      }
      .login {
         border-radius: 0% !important;
@@ -3827,10 +3849,14 @@
 @media (max-width: 480px) {
 
     body {
-        background: linear-gradient(to right, #D3E8FA 0%, #D3E8FA 50%, #D3E8FA 100%) !important;
+        /*background: linear-gradient(to right, #D3E8FA 0%, #D3E8FA 50%, #D3E8FA 100%) !important;*/
         /*background-image: none !important;*/
-        background-size: 100% Auto !important;
+        /*background-size: 100% Auto !important;
+        background-repeat: no-repeat !important;*/
+        background-image: url('../../img/cracker.gif'), url('../../img/cracker2.gif'), url('../../img/people.gif'), url('../../img/new-year-bottom-bg.svg'), url('../../img/signIn-bg2.svg') !important;
         background-repeat: no-repeat !important;
+        background-position: left, right, bottom, bottom, center !important;
+        background-size: contain, contain, contain, contain, cover !important;
      }
      .login {
         border-radius: 50% !important;

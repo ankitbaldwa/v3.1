@@ -1,4 +1,5 @@
 <div class="login-box">
+  <img src="https://accordance.co.in/assets/images/Accordance_logo.png" class="img" alt="User Image">
   <div class="login-logo">
     <b class="text-uppercase"><?= $company_name ?></b>
   </div>
