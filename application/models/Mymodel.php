@@ -202,13 +202,21 @@ class Mymodel extends CI_Model
         return $result->result_array();
     }
     //Call procedure for gst
-    public function GetGst($user_id, $dashboard_stored_proc, $from_date = "", $to_date = "", $status){
+    public function GetGst($user_id, $from_date = "", $to_date = "", $status){
         //$dashboard_stored_proc = "CALL GetDashboard(?)";
-        $data = array('Id' => $user_id, 'FY_from' => $from_date, 'FY_to' => $to_date, 'Status'=> $status);
+        /*$data = array('Id' => $user_id, 'FY_from' => $from_date, 'FY_to' => $to_date, 'Status'=> $status);
         $result = $this->db->query($dashboard_stored_proc, $data);
-        $result->next_result();
+        $result->next_result();*/
+        $condition = "user_id = ".$user_id." AND `Status` != 'Cancelled' AND invoice_date BETWEEN '".$from_date."' AND '".$to_date."'";
+        $this->db->select("DISTINCT DATE_FORMAT(`invoice_date`,'%M %Y') AS Month, ROUND(sum(CGST),2) as CGST, ROUND(sum(SGST),2) as SGST, ROUND(sum(IGST),2) as IGST,ROUND(sum(CESS),2) as CESS, ROUND(sum(TCS),2) as TCS, ROUND(SUM((CGST)+ (SGST)+ (IGST)+ (CESS)+ (TCS)),2) AS `total_tax` ");
+        $this->db->from('invoice');
+        if($condition != '')
+        $this->db->where($condition);
+        $this->db->order_by("DATE_FORMAT(`invoice_date`,'%Y %m') ASC");
+        $this->db->group_by("DATE_FORMAT(`invoice_date`,'%M %Y')");
+        return $this->db->get()->result();
         //end of new code
-        return $result->result();
+        //return $result->result();
     }
     public function Script($table,$condition='',$order='',$group='',$limit=''){
         $this->db->reconnect();
