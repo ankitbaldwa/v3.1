@@ -3733,7 +3733,7 @@
      background-image: url('../../img/cracker.gif'), url('../../img/cracker2.gif'), url('../../img/people.gif'), url('../../img/new-year-bottom-bg.svg'), url('../../img/signIn-bg2.svg');
     background-repeat: no-repeat;
     background-position: left, right, bottom, bottom, center;
-    background-size: contain, contain, contain, contain, cover;
+    background-size: 10%, 10%, contain, contain, cover;
  }
  
  .login-box,
@@ -3773,7 +3773,7 @@
         background-image: url('../../img/cracker.gif'), url('../../img/cracker2.gif'), url('../../img/people.gif'), url('../../img/new-year-bottom-bg.svg'), url('../../img/signIn-bg2.svg') !important;
         background-repeat: no-repeat !important;
         background-position: left, right, bottom, bottom, center !important;
-        background-size: contain, contain, contain, contain, cover !important;
+        background-size: 10%, 10%, contain, contain, cover !important;
     }
 
 }
@@ -3789,7 +3789,7 @@
         background-image: url('../../img/cracker.gif'), url('../../img/cracker2.gif'), url('../../img/people.gif'), url('../../img/new-year-bottom-bg.svg'), url('../../img/signIn-bg2.svg') !important;
         background-repeat: no-repeat !important;
         background-position: left, right, bottom, bottom, center !important;
-        background-size: contain, contain, contain, contain, cover !important;
+        background-size: 10%, 10%, contain, contain, cover !important;
      }
      .login {
         border-radius: 50% !important;
@@ -3813,7 +3813,7 @@
         background-image: url('../../img/cracker.gif'), url('../../img/cracker2.gif'), url('../../img/people.gif'), url('../../img/new-year-bottom-bg.svg'), url('../../img/signIn-bg2.svg') !important;
         background-repeat: no-repeat !important;
         background-position: left, right, bottom, bottom, center !important;
-        background-size: contain, contain, contain, contain, cover !important;
+        background-size: 10%, 10%, contain, contain, cover !important;
      }
      .login {
         border-radius: 0% !important;
@@ -3833,7 +3833,7 @@
         background-image: url('../../img/cracker.gif'), url('../../img/cracker2.gif'), url('../../img/people.gif'), url('../../img/new-year-bottom-bg.svg'), url('../../img/signIn-bg2.svg') !important;
         background-repeat: no-repeat !important;
         background-position: left, right, bottom, bottom, center !important;
-        background-size: contain, contain, contain, contain, cover !important;
+        background-size: 10%, 10%, contain, contain, cover !important;
      }
      .login {
         border-radius: 0% !important;
@@ -3856,7 +3856,7 @@
         background-image: url('../../img/cracker.gif'), url('../../img/cracker2.gif'), url('../../img/people.gif'), url('../../img/new-year-bottom-bg.svg'), url('../../img/signIn-bg2.svg') !important;
         background-repeat: no-repeat !important;
         background-position: left, right, bottom, bottom, center !important;
-        background-size: contain, contain, contain, contain, cover !important;
+        background-size: 10%, 10%, contain, contain, cover !important;
      }
      .login {
         border-radius: 50% !important;
