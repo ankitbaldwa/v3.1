@@ -50,7 +50,7 @@ class Welcome extends Admin_Parent {
 		$fy = $this->Mymodel->GetData("mst_financial_year","user_id=".Id." and status='Active'");
 		$dashboard_data = $this->Mymodel->Dashboard(Id, "CALL GetDashboard(?, ?, ?)",$fy->from_date,$fy->to_date);
 		$Donut_chart = $this->Mymodel->Dashboard(Id, "CALL Donut_chart(?, ?, ?)",$fy->from_date,$fy->to_date);
-		$complete_gst = $this->Mymodel->GetGst(Id,"CALL GetGST(?, ?, ?, ?)",$fy->from_date,$fy->to_date,'Completed');
+		$complete_gst = $this->Mymodel->GetGst(Id,$fy->from_date,$fy->to_date,'Completed');
 		//$complete_gst = $this->Mymodel->GetGst(Id,"CALL GetGST(?, ?, ?, ?)",'2019-04-01','2020-03-31','Completed');
 		$script = $this->Mymodel->Script('invoice i',"i.status != 'Cancelled' AND i.invoice_date BETWEEN '".$fy->from_date."' AND '".$fy->to_date."' AND i.user_id='".Id."'", 'DATE_FORMAT(i.invoice_date, "%Y-%m") ASC','DATE_FORMAT(i.invoice_date, "%M %Y")');
 		$purchase_script = $this->Mymodel->Purchase_Script('purchase_invoice pi',"pi.status != 'Cancelled' AND pi.invoice_date BETWEEN '".$fy->from_date."' AND '".$fy->to_date."' AND pi.user_id='".Id."'", 'DATE_FORMAT(pi.invoice_date, "%Y-%m") ASC','DATE_FORMAT(pi.invoice_date, "%M %Y")');
