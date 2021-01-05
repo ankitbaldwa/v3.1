@@ -177,15 +177,33 @@
                       <td class="text-right"><?php $amt[$sr] = $details->Amount; ?><?= moneyFormatIndia($details->Amount) ?></td>
                     </tr>
                 <?php } ?>
-                <!--<tr>
+                <tr>
                     <td></td>
-                    <td style="text-align:left;font-weight: bold;"> <b>Lorry No. </b>&nbsp;<?= $data->Lorry_no ?></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td style="text-align:right;"></td>
-                  </tr>-->
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align:right;"></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align:right;"></td>
+                  </tr>
                 <?php if($data->Additional_amount != 0) { ?>
                     <tr>
                       <td></td>
