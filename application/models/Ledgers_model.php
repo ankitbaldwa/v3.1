@@ -17,7 +17,7 @@ class Ledgers_model extends CI_Model
     /** SELECT id, customer_id, transaction_date, dr_amount, cr_amount, COALESCE(((SELECT SUM(b.dr_amount) FROM ledger b WHERE b.transaction_date <= l.transaction_date AND l.customer_id = '4') - (SELECT SUM(b.cr_amount) FROM ledger b WHERE b.transaction_date <= l.transaction_date AND l.customer_id = '4')), 0) as balance, narration FROM ledger l WHERE l.customer_id = '4' ORDER BY l.transaction_date DESC */
     private function _get_datatables_query($table, $condition, $customer_id)
     {
-        $feilds = array('l.id', 'l.transaction_date', 'l.dr_amount', 'l.cr_amount', 'COALESCE(((SELECT SUM(b.dr_amount) FROM ledger b WHERE b.transaction_date <= l.transaction_date AND l.customer_id = '.$customer_id.') - (SELECT SUM(b.cr_amount) FROM ledger b WHERE b.transaction_date <= l.transaction_date AND l.customer_id = '.$customer_id.')), 0) as balance', 'l.balance_amount', 'i.invoice_no', "CONCAT(c.FirstName,' ',c.LastName) as name", "p.receipt_no", "p.payment_type");
+        $feilds = array('l.id', 'l.transaction_date', 'l.dr_amount', 'l.cr_amount', 'COALESCE(((SELECT SUM(b.dr_amount) FROM ledger b WHERE b.transaction_date <= l.transaction_date AND b.customer_id = '.$customer_id.') - (SELECT SUM(b.cr_amount) FROM ledger b WHERE b.transaction_date <= l.transaction_date AND b.customer_id = '.$customer_id.')), 0) as balance', 'l.balance_amount', 'i.invoice_no', "CONCAT(c.FirstName,' ',c.LastName) as name", "p.receipt_no", "p.payment_type");
         $this->db->select($feilds);
         $this->db->from($table);
         $this->db->join('invoice i', "i.id = l.invoice_id",'LEFT');
