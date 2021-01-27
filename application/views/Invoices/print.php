@@ -33,7 +33,7 @@
       padding-right: 5px !important;
     }
     .table tr td {
-      line-height: 1.4 !important;
+      line-height: 1.3 !important;
     }
     .table2 tr th{
       border: 1px solid black;
