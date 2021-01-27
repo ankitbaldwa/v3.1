@@ -24,6 +24,7 @@
   <style>
   table{
     width: 100%;
+    font-size: medium;
   }
   .table tr td{
       border: 1px solid black;
@@ -65,6 +66,7 @@
     }
     .text-bold {
       font-weight: bold;
+      font-size: medium;
     }
     .text-center {
       text-align: center;
@@ -99,7 +101,7 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body onload="window.print();" style="line-height:1.3 !important;">
+<body onload="window.print();" style="line-height:1.3 !important;font-size: medium;">
     <table class="border-0 w-100-per" cellspacing="0" cellpadding="0">
       <tbody>
           <tr>
@@ -192,12 +194,12 @@
                 <tbody>
                   <tr class="text-center text-bold">
                     <th style="width: 5%;">Sl No.</th>
-                      <th style="width: 40%;">Description of Goods</th>
-                      <th style="width: 8%;">HSN / SAC</th>
-                      <th style="width: 15%;">Quantity</th>
-                      <th style="width: 8%;">Rate</th>
+                      <th style="width: 35%;">Description of Goods</th>
+                      <th style="width: 10%;">HSN / SAC</th>
+                      <th style="width: 20%;">Quantity</th>
+                      <th style="width: 5%;">Rate</th>
                       <th style="width: 5%;">Per</th>
-                      <th style="width: 16%;">Amount</th>
+                      <th style="width: 20%;">Amount</th>
                   </tr>
                 <?php $Total_qty = 0; $hsn; $amt; $sr = 0; $cgst =0; $sgst=0; $igst= 0;$Additional_amount = 0;$cess = 0;$tcs = 0;
                 foreach($invoice_details as $details){ ?>
