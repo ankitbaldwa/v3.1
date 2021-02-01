@@ -9,9 +9,9 @@
   <!-- Bootstrap 3.3.7 -->
   <!--<link rel="stylesheet" href="<?= base_url()?>assets/bower_components/bootstrap/dist/css/bootstrap.min.css">-->
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="<?= base_url()?>assets/bower_components/font-awesome/css/font-awesome.min.css">
+  <!--<link rel="stylesheet" href="<?= base_url()?>assets/bower_components/font-awesome/css/font-awesome.min.css">-->
   <!-- Ionicons -->
-  <link rel="stylesheet" href="<?= base_url()?>assets/bower_components/Ionicons/css/ionicons.min.css">
+  <!--<link rel="stylesheet" href="<?= base_url()?>assets/bower_components/Ionicons/css/ionicons.min.css">-->
   <!-- Theme style -->
   <!--<link rel="stylesheet" href="<?= base_url()?>assets/dist/css/AdminLTE.min.css">-->
 
@@ -24,7 +24,7 @@
   <style>
   table{
     width: 100%;
-    font-size: medium;
+    font-size: small;
   }
   .table tr td{
       border: 1px solid black;
@@ -99,9 +99,9 @@
     </style>
 
   <!-- Google Font -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">-->
 </head>
-<body onload="window.print();" style="line-height:1.3 !important;font-size: medium;">
+<body onload="window.print();" style="line-height:1.5 !important;font-size: small;">
     <table class="border-0 w-100-per" cellspacing="0" cellpadding="0">
       <tbody>
           <tr>
