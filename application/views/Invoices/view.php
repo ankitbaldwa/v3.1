@@ -306,7 +306,7 @@
                       <div class="col-xs-12">
                       <?php if($data->Status != 'Cancelled'){ ?>
                         <a href="<?= site_url(INVOICES_PRINT.'/'.enc_dec(1,$data->id))?>" target="_blank" class="btn btn-default btn-sm btn-flat"><i class="fa fa-print"></i> Print</a>
-                      
+                        <?= anchor(site_url(INVOICES_PAYMENT.'/'.enc_dec(1,$data->id)),'<i class="fa fa-money"></i> Payment', array('title' => 'Invoice Payment', 'class'=>'btn btn-info btn-sm btn-flat'))?>
                         <div class="form-group pull-right">
                         <?php if($data->waybill_file == "") { ?>
                             <form enctype="multipart/form-data">

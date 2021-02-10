@@ -14,6 +14,7 @@ class Custom{
     function sendEmailSmtp($subject,$body_email,$to,$attachment='',$company =array(),$attachment2='')
     {
         $this->CI =& get_instance();
+        $this->CI->load->library('email');
         $config['protocol']    = 'smtp';
 		$config['smtp_host']    = 'mail.accordance.co.in';
 		$config['smtp_port']    = '587';

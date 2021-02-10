@@ -1,0 +1,574 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Invoice</title>
+    <style>
+        * {
+            font-family:Verdana, "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+        }
+         @import url('base_path/static/fonts/Nunito-Light.ttf'); */
+        .invoice-box{
+            max-width:100%;
+            margin:auto;
+            padding:30px;
+            /*border:1px solid #eee;*/
+            box-shadow:0 0 10px rgba(0, 0, 0, .15);
+            font-size:13px;
+            line-height:17px;
+            font-family:'Nunito', sans-serif;
+            color:#000;
+        }
+        .invoice-box table th {
+
+            border-right: 1px solid;
+        }
+        table tr th{
+            border-color: black;
+        }
+        .invoice-box table{
+            width:100%;
+            line-height:inherit;
+            text-align:left;
+        }
+
+        .invoice-box table td{
+            padding:5px;
+            vertical-align:top;
+            border: 1px solid black;
+        }
+        .invoice-box table th{
+
+            /*border: 1px solid;*/
+            text-align: center;
+        }
+
+        .invoice-box table tr td:nth-child(2){
+            text-align:right;
+        }
+
+
+        /* .invoice-box table tr.top table td{
+             padding-bottom:20px;
+         }*/
+
+        .invoice-box table tr.top table td.title{
+            font-size:45px;
+            line-height:45px;
+            color:#333;
+        }
+
+        .invoice-box table tr.information table td{
+            /*padding-bottom:10px;*/
+            line-height: 13px;
+        }
+
+        .invoice-box table tr.heading td{
+            background:#eee;
+
+            font-weight:bold;
+        }
+
+        .invoice-box table tr.details td{
+            padding-bottom:20px;
+        }
+
+        .invoice-box table tr.item td{
+            border-bottom:1px solid #eee;
+        }
+
+        .invoice-box table tr.item.last td{
+            border-bottom:none;
+        }
+
+        .invoice-box table tr.total td:nth-child(2){
+            border-top:2px solid #eee;
+            font-weight:bold;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .invoice-box table tr.top table td{
+                width:100%;
+                display:block;
+                text-align:center;
+            }
+
+            .invoice-box table tr.information table td{
+                width:100%;
+                display:block;
+                text-align:center;
+            }
+        }
+        #product_table td{
+
+            font-size: 13px;
+            padding: 4px 1px 4px 1px;
+            vertical-align: middle;
+        }
+        #product_table th{
+            padding: 4px 1px 4px 1px;
+            font-size: 11px;
+        
+            vertical-align: middle;
+        }
+        input{
+            color: #f2f2f2 !important;
+        }
+        #reverse_charge_table tr td{
+            padding:5px 5px 3px 3px !important;
+            font-size : 15px;
+            line-height: 17px;
+        }
+        #transportation_details_table tr td {
+            padding:5px 5px 3px 3px !important;
+            font-size: 15px;
+            line-height: 17px;
+        }
+        #receiver_details_table tr td{
+            padding:5px 5px 3px 3px !important;
+            font-size: 15px;
+        }
+        #amount_table tr td {
+            font-size: 14px;
+        }
+        table { page-break-inside:auto !important }
+        tr    { page-break-inside:avoid !important; page-break-after:auto !important }
+        td    { page-break-inside:avoid !important; page-break-after:auto !important }
+        thead { display:table-header-group !important }
+        tfoot { display:table-footer-group !important }
+        div{
+            page-break-inside: avoid;
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-box">
+    <!--     <center><div class="heading" style="border: 1px solid">INVOICE</div></center>
+     -->
+    <table cellpadding="0px" cellspacing="0px" frame="box" rules="none" style="border: 1px solid;">
+        <tr>
+            
+            <th  style="text-align: center;padding:5px;border: none"><img src="https://gimbooks-media-prod-bucket.s3.ap-south-1.amazonaws.com/media/media/welcome/gimbooks.png" style="max-height: 120px;max-width: 150px;border-radius: 4px; width:180px; height:160px;"/></th>
+            
+            <th style="padding-right:15%">
+                <table>
+                    <tbody>
+                    <tr style="height: 25px;"><th style="font-size:20px;text-align: center;border: none"><b>YOUR COMPANY NAME</b></th></tr>
+                    <tr>
+                        <th style="font-size:15px;text-align: center;border: none;line-height: 10px;"><b>
+                          <p style="line-height: 20px;">OFFICE NO 23 ABCD COMPLEX,XYZ COLONY,RAIPUR,MUMBAI,ARUNACHAL PRADESH</p>
+                          <P>494949 , 888888888 ,youremail@yourcompany.com</P>
+                          <p>GSTIN : 12TYUIOPHKJAKAK</p>
+                        </b></th>
+                    </tr>
+    
+                    </tbody>
+                </table>
+            </th>
+        </tr>
+        <tr style="border-collapse: collapse; border-right: 1px solid black;height: auto;">
+            <th colspan="2" style="text-align: center;border-top: 1px solid black; border-bottom:1px solid black; background-color: #D4E9FD;color:#000000;">
+                <table cellspacing="0px" cellpadding="0px" style="border-collapse: collapse; margin:0px;height: auto;" >
+                    <tr>
+                        <td width="100%" style="padding-left:43%;border: none;vertical-align: middle;">TAX INVOICE</td>
+                    </tr>
+                </table>
+            </th>
+        </tr>
+        <tr class="top" style="border-collapse: collapse; border: none">
+            <td colspan="2" style="padding: 0px;border: none;height: 100%">
+                <table style="border-collapse: collapse;width: 100%;height: 100%" >
+                    <tr>
+                        <td style="padding: 0px;border: none;border-right: 1px solid black;height: 100%">
+                            <table id="reverse_charge_table" cellspacing="0px" cellpadding="0px" style="border-collapse: collapse; margin:0px;height: 100%" >
+                                <tr>
+                                    <td width="48%" style="padding:2px;border: none;">Reverse Charge</td>
+                                    <td width="2%" style="padding:2px;border: none;">:</td>
+                                    <td width="50%" style="padding:2px;text-align: left;border: none;">:NO</td>
+                                </tr>
+                                <tr>
+                                    <td width="48%" style="padding:2px;border: none;">Invoice No. </td>
+                                    <td width="2%" style="padding:2px;border: none;">:</td>
+                                    <td width="50%" style="padding:2px;text-align: left;border: none;">102</td>
+                                </tr>
+                                <tr>
+                                    <td width="48%" style="padding:2px;border: none;">Invoice Date</td>
+                                    <td width="2%" style="padding:2px;border: none;">:</td>
+                                    <td width="50%" style="padding:2px;text-align: left;border: none;">15-4-2020</td>
+                              
+                                </tr>
+                                
+                              
+            
+                                <tr>
+                                   
+                                    <td width="48%" style="padding:2px;border: none;">State</td>
+                                    <td width="2%" style="padding:2px;border: none;">:</td>
+                                    <td width="50%" style="padding:2px;text-align: left;border: none;">CHATTISGARH</td>
+                                    <td width="50%" style="padding:0px !important;text-align: left;border: none;padding: 0px;">
+                                        <table cellspacing="0px" cellpadding="0px" style="border-collapse: collapse; margin: 0px;height: 100%; ">
+                                            <tbody>
+                                            <tr>
+                                                <td width="70%" style="border:none;padding: 3px;"></td>  
+                                                    <td width="20%" style="font-size:12px;vertical-align: middle;padding:2px;border:none;border-left: 1px solid black;border-top: 1px solid black;text-align: left">State Code </td>
+                                                    <td width="10%" style="padding:2px;border: none;border-top: 1px solid black;vertical-align: middle;">:&nbsp;12</td>
+                                           
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                              
+                                </tr>
+                            </table>
+                        </td>
+                        <td style=" width:50%; text-align: left;padding: 0px; border: none;height: 100%;">
+                            <table id="transportation_details_table" cellspacing="0px" cellpadding="0px" style="border-collapse: collapse; margin:0px;height: 100%;">
+                                <tr>
+                                    <td width="55%" style="padding:2px;border: none;">Transportation Mode</td>
+                                    <td width="2%" style="padding:2px;border: none;">:</td>
+                                    <td width="43%" style="text-align: left;border: none;">TRUCK</td>
+                                </tr>
+                                <tr>
+                                    <td width="48%" style="padding:2px;border: none;">Vehicle No.</td>
+                                    <td width="2%" style="padding:2px;border: none;">:</td>
+                                    <td width="50%" style="text-align: left;border: none;">XYZ 12 AB 7171</td>
+                                </tr>
+                                <tr>
+                                    <td width="48%" style="padding:2px;border: none;">Date of Supply</td>
+                                    <td width="2%" style="padding:2px;border: none;">:</td>
+                                    <td width="50%" style="padding:2px;text-align: left;border: none;">15-4-2020</td>
+                                   
+                                </tr>
+                                <tr>
+                                    <td width="48%" style="padding:2px;border: none;">Place of Supply</td>
+                                    <td width="2%" style="padding:2px;border: none;">:</td>
+                                    <td width="50%" style="padding:2px;text-align: left;border: none;">CHATTISGARH</td>
+                                </tr>
+                               
+                            
+                               
+                            </table>
+                        </td>
+                        
+                            <td style="text-align: left;padding: 0px; width:33.33%;border: none;height: 100%;border-left: 1px solid black;">
+                                <table cellspacing="0px" cellpadding="0px" style="border-collapse: collapse; margin:0px;height: 100%">
+                                    <tr>
+                                        <td width="48%" style="padding:2px;border: none;">Challan No.</td>
+                                        <td width="2%" style="padding:2px;border: none;">:</td>
+                                        <td width="50%" style="text-align: left;border: none;">123456</td>
+                                    </tr>
+                                    <tr>
+                                        <td width="55%" style="padding:2px;border: none;">Transporter Name</td>
+                                        <td width="2%" style="padding:2px;border: none;">:</td>
+                                        <td width="43%" style="padding:2px;text-align: left;border: none;">ABC XYZ</td>
+                                    </tr>
+                                    <tr>
+                                        <td width="48%" style="padding:2px;border: none;">LR Number.</td>
+                                        <td width="2%" style="padding:2px;border: none;">:</td>
+                                        <td width="50%" style="padding:2px;text-align: left;border: none;">lr_number</td>
+                                    </tr>
+                                    <tr>
+                                        <td width="48%" style="padding:2px;border: none;">PO Number</td>
+                                        <td width="2%" style="padding:2px;border: none;">:</td>
+                                        <td width="50%" style="padding:2px;text-align: left;border: none;">12345</td>
+                                    </tr>
+                                   
+                        
+                                </table>
+                            </td>
+                        
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr class="information">
+            <td colspan="2" style="padding: 0px;border: none;">
+                <table cellspacing="0px" cellpadding="0px" style="border-collapse: collapse; margin:0px">
+                    <tr>
+                        <td style=" text-align: center;border-left:none;background-color: #D4E9FD;color:#000000;line-height: 27px;" width="50%" >
+                            <b>Details of Receiver | Billed to:</b>
+                        </td>
+                        <td style="text-align: center;border-right:none;background-color: #D4E9FD  ;color:#000000;line-height: 27px;" >
+                            <b>Details of Consignee | Shipped to:</b>
+                        </td>
+                    </tr>
+                </table>
+                <table id="receiver_details_table" cellspacing="0px" cellpadding="0px" style="border-collapse: collapse; margin: 0px;height: 100%">
+                    <tr>
+                        <td style="padding: 0px !important; width:50%; border: none;border-right: 1px solid black;height: 100%;">
+                            <table cellspacing="0px" cellpadding="0px" style="border-collapse: collapse; margin:0px;height: 100%;line-height: 1.3">
+                                <tr>
+                                    <td width="30%" style="padding:3px;border: none;">Name </td>
+                                    <td width="10%" style="padding:3px;border: none;text-align: center;">:</td>
+                                    <td colspan="6" width="60%" style="padding:0px;text-align: left;border: none;">SHIVJI BHATTA COMPANY</td>
+                                </tr>
+                                <tr>
+                                    <td width="30%" style="padding:3px;border: none;">Address</td>
+                                    <td width="10%" style="padding:3px;border: none;text-align: center;">:</td>
+                                    <td width="60%" colspan="6" style="text-align: left;border: none;line-height: 1.1em;">Bus Stand Durg 41637 , Bhilai,52139
+                                    
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="30%" style="padding:3px;border: none;">GSTIN</td>
+                                    <td width="10%" style="padding:3px;border: none;text-align: center;">:</td>
+                                    <td width="60%" style="padding:3px;text-align: left;border: none;">23FGHJKLKJHG</td>
+                                </tr>
+                                <tr>
+                                    <td width="30%" style="padding:3px;border: none;">State</td>
+                                    <td width="10%" style="padding:3px;border: none;text-align: center;">:</td>
+                                    <td width="60%" style="padding:3px;text-align: left;border: none;padding: 0px;">CHATTISGARH</td>
+                                       
+                                
+                                </tr>
+                                <tr>
+                                    
+                                    <td width="30%" style="padding:3px;border: none;">MOBILE</td>
+                                    <td width="10%" style="padding:3px;border: none;text-align: center;">:</td>
+                                    <td width="60%" style="padding:3px;text-align: left;border: none;">1234567890</td>
+                            
+                                    <td width="30%" style="padding:3px;border: none;"></td>
+                                    <td width="10%" style="padding:3px;border: none;text-align: center;"></td>
+                                    <td width="60%" style="padding:3px;text-align: left;border: none;"></td>
+                        
+                                    <td width="20%" style="font-size:12px;vertical-align: middle;padding:2px;border:none;border-left: 1px solid black;border-top: 1px solid black;text-align: left;">State Code </td>
+                                    <td width="10%" style="padding:2px;border: none;border-top: 1px solid black;vertical-align: middle;">:&nbsp;23</td>
+                              
+                            </tr>
+
+                              
+                
+                    
+                            </table>
+
+                        </td>
+                        <td colspan="6" style="text-align: left;padding: 0px !important; width:50%;border: none;height: 100%">
+                            <table colspan="6" cellspacing="0px" cellpadding="0px" style="border-collapse: collapse; margin:0px;height: 100%;line-height: 1.3">
+                                <tr>
+                                    <td width="30%" style="padding:3px;border: none;">Name</td>
+                                    <td width="10%" style="padding:3px;border: none;text-align: center;">:</td>
+                                    <td width="60%" style="padding:0px;text-align: left;border: none;">SHIVJI BHATTA COMPNAY</td>
+                                </tr>
+                                <tr>
+                                    <td width="30%" style="padding:3px;border: none;">Address</td>
+                                    <td width="10%" style="padding:3px;border: none;text-align: center;">:</td>
+                                    <td colspan="6" width="60%"  style="text-align: left;border: none;line-height: 1.3em;">Bus Stand Durg 41637 , Bhilai,52139
+                                      
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="30%" style="padding:3px;border: none;">GSTIN</td>
+                                    <td width="10%" style="padding:3px;border: none;text-align: center;">:</td>
+                                    <td width="60%" style="padding:3px;text-align: left;border: none;">23FGHJKLKJHG</td>
+                                </tr>
+                                <tr>
+                                    <td width="30%" style="padding:3px;border: none;">State</td>
+                                    <td width="10%" style="padding:3px;border: none;text-align: center;">:</td>
+                                    <td width="60%" style="padding:3px;text-align: left;border: none;padding: 0px;height: 100%;">23</td>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    
+                                        <td width="30%" style="padding:3px;border: none;">MOBILE</td>
+                                        <td width="10%" style="padding:3px;border: none;text-align: center;">:</td>
+                                        <td width="60%" style="padding:3px;text-align: left;border: none;">1234567890</td>
+                                
+                                        <td width="30%" style="padding:3px;border: none;"></td>
+                                        <td width="10%" style="padding:3px;border: none;text-align: center;"></td>
+                                        <td width="60%" style="padding:3px;text-align: left;border: none;"></td>
+                            
+                                        <td width="20%" style="font-size:12px;vertical-align: middle;padding:2px;border:none;border-left: 1px solid black;border-top: 1px solid black;text-align: left;">State Code </td>
+                                        <td width="10%" style="padding:2px;border: none;border-top: 1px solid black;vertical-align: middle;">:&nbsp;23</td>
+                                  
+                                </tr>
+                              
+                    
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="padding: 0px;border: none;">
+                <table class="table" id="product_table" cellspacing="0px" cellpadding="0px" style="border-collapse: collapse;border: none;page-break-inside:auto " width="100%;">
+                    <thead style="background-color: #D4E9FD;color: #000000 ;border: none ;display: table-header-group !important;">
+                    <tr style="border-top:1px solid black">
+                        <th rowspan="2" style="text-align: center;border-right:1px solid black ;width:1%">Sr.<br>No.</th>
+                        <th rowspan="2" style="text-align: center;border-left: 1px solid black;border-right:1px solid black ;width:12%;">Name of product</th>
+                            <th rowspan="2" style="text-align: center;border-left: 1px solid black;border-right:1px solid black ;width:7%">HSN/SAC</th>
+                        <th rowspan="2" style="text-align: center;border-left: 1px solid black;border-right:1px solid black ;width:5%">QTY</th>
+                        <th rowspan="2" style="text-align: center;border-left: 1px solid black;border-right:1px solid black ;width:5%">Unit</th>
+                        <th rowspan="2" style="text-align: center;border-left: 1px solid black;border-right:1px solid black ;width:5%">Rate</th>
+                        <th rowspan="2" style="text-align: center;border-left: 1px solid black;border-right:1px solid black ;width:8%">Amount</th>
+                            <th rowspan="2" style="text-align: center;border-left: 1px solid black;border-right:1px solid black ;width:5%">Less Discount</th>
+                        <th rowspan="2" style="text-align: center;border-left: 1px solid black;border-right:1px solid black;width:9%">Taxable Value</th>
+                                <th colspan="2" style="text-align: center;border-right:1px solid black;width:11%">IGST</th>
+                        <th rowspan="2" style="text-align: center;border-right:none;width:10%;">Total</th>
+                    </tr>
+                    <tr style="border-top:1px solid black">
+                                <th style="text-align: center;border-right:1px solid black;width:5.5%">Rate</th>
+                                <th style="text-align: center;border-right:1px solid black;width:5.5%">Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="height: 100%;page-break-inside: avoid;page-break-after: auto;line-height: 12px !important;">
+                            <td style="text-align: center;border-left: none;">1</td>
+                            <td style="text-align: left;padding: 5px;margin-top: 5px;margin-bottom: 5px;">NoteBook</td>
+                                <td style="text-align: left;padding: 5px;">NA</td>
+                            <td style="text-align: center;padding: 5px;"> &#8377;120.00</td>
+                            <td style="text-align: center;padding: 5px;">pieces</td>
+                            <td style="text-align: center;padding: 5px;">&#8377;100.00</td>
+                            <td style="text-align: center;padding: 5px;">&#8377;12000.00</td>
+                                <td style="text-align: center;padding: 5px;">&#8377;90.00</td>
+                            <td style="text-align: center;padding: 5px;;background-color: #D4E9FD;color: #000000">&#8377;11910.00</td>
+                                            <td style="text-align: center;padding: 5px;">&#8377;18.00%</td>
+                                            <td style="text-align: center;padding: 5px;">&#8377;2143.00</td>
+                    
+                            <td style="text-align: center;border-right:none;"><strong>&#8377;14053.80</strong></td>
+
+                        </tr>
+
+                        <tr>
+                            <td style="padding-top: 100px;"></td>
+                            <td ></td>
+                                <td></td>
+                            <td></td>
+                            <td ></td>
+                            <td ></td>
+                            <td ></td>
+                                <td ></td>
+                            <td style="text-align: center;padding: 5px;;background-color: #D4E9FD;color: #000000"></td>
+                                            <td ></td>
+                                            <td ></td>
+                    
+                           
+                        </tr>
+                      
+
+                       
+
+                    <!-- ====================================================== -->
+                    <tr style="background-color:#D4E9FD;color: #000000;height: 24px;">
+                            <td style="text-align: center;border: none;border-top: 1px solid black;border-bottom: 1px solid black;"></td>
+                        <td colspan="2" style="text-align: center;border-left: none;">Total Quantity</td>
+                        <td style="text-align: center;">&#8377;120.00</td>
+                        <td style="text-align: center;border-right: none;"></td>
+                        <td style="text-align: center;border-left: none;"></td>
+                            <td style="text-align: center;">&#8377;12000.00</td>
+                                <td style="text-align: center;">&#8377;90.00</td>
+                            <td style="text-align: center;">&#8377;11910.00</td>
+                                    <td colspan="2" style="text-align: center;">&#8377;2143.00</td>
+
+                            <td style="text-align: center;border-left:none;">&#8377;<strong>14054.00</strong></td>
+                    </tr>
+                    </tbody>
+                </table>
+                
+
+                <table cellspacing="0px" cellpadding="0px" style="border-collapse: collapse;page-break-inside: avoid !important;">
+                    <tr>
+                        <td  style="padding: 0px;height: 100%;border: none;border-right: 1px solid black " width="66.67%">
+                            <table style="height: 100%;border-collapse: collapse;" cellpadding="0px" cellspacing="0px">
+                                <tr style="height: 33.33%; ">
+                                    <td style="border-bottom:1px solid black;font-size: 13px; height:auto;text-align: center;border: none;"><b>Total Invoice Amount in words</b><br>
+                                        <p style="text-align: center;font-size: 16px;line-height: 20px;">Fourteen Thousand Fifty Four Rupees Only/-</p>
+
+                                    </td>
+                                </tr>
+                                    <tr style="height: 20%; ">
+                                        <td style="height:20%;text-align: center;border: none;border-top: 1px solid black">
+                                            <b>Bank Details</b><br>
+                                        <br>
+                                            <table cellspacing="0px" cellspacing="0px" style="height: 20px">
+                                                    <tr>
+                                                        <td style="width:27%;border:none;padding-bottom: 4px;padding-top: 0px;font-size: 13px;">Account Holder Name : </td>
+                                                        <td style="width:28%; border:none;padding-bottom: 2px;padding-top: 0px;font-size: 13px;">SHIVJI</td> 
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:27%;border:none;padding-bottom: 4px;padding-top: 0px;font-size: 13px;">Bank Account Number : </td>
+                                                        <td style="width:28%; border:none;padding-bottom: 2px;padding-top: 0px;font-size: 13px;">1234567890</td>
+                                                      
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:27%;border:none;padding-bottom: 4px;padding-top: 0px;font-size: 13px;">Bank IFSC Code : </td>
+                                                        <td style="width:28%; border:none;padding-bottom: 2px;padding-top: 0px;font-size: 13px;">SBI12345678</td>
+                                                      
+                                                    </tr>
+                                                <!-- <tr>
+                                                    <td style="width:27%; border:none;padding-bottom: 4px;padding-top: 0px;font-size: 13px;">SHIVJI </td>
+                                                    <td style="width:28%; border:none;padding-bottom: 2px;padding-top: 0px;font-size: 13px;">123456789</td>
+                                                    <td style="width:20%;border:none;padding-top: 0px;font-size: 13px;">State Bank of India </td>
+                                                    <td style="width:25%;border:none;font-size: 13px;padding-top: 0px;">SBIN001083</td>
+
+                                                </tr> -->
+                                                    
+                                            </table>
+                                        </td>
+                                    </tr>
+                            </table>
+                        </td>
+                        <td style="padding: 0px;border: none;border-left: 1px solid black" width="33%">
+                            <table id="amount_table" cellspacing="0px" cellpadding="0px" style="height: 100%">
+                                <tr style="background-color:#D4E9FD;color:#000000;">
+                                    <td width="50%" style="border: none;border-bottom:1px solid black;">Total Amount Before Tax</td>
+                                    <td width="5%" style="border: none;border-right: 1px solid black;border-bottom:1px solid black;text-align: left;">:</td>
+                                        <td style="border: none;border-bottom:1px solid #D4E9FD;text-align: right;"> &#8377;  <strong>11910.00</strong></td>
+                                </tr>
+                                        <tr>
+                                            <td width="50%" style="border: none;">Add :  IGST </td>
+                                            <td width="5%" style="border: none;border-right: 1px solid black;text-align: left;">:</td>
+                                                <td style="border: none;text-align: right;"> &#8377;2143.80</td>
+                                        </tr>
+                              
+                                    <tr style="background-color: #D4E9FD;color: #000000">
+                                        <td width="50%" style="border: none;border-top:1px solid black;">Tax Amount : GST </td>
+                                        <td width="5%" style="border: none;border-right: 1px solid black;border-top:1px solid black;text-align: left;">:</td>
+                                        <td style="border: none;text-align: right;"><b>&#8377;2143.80</b></td>
+                                    </tr>
+                                    <tr style="background-color: #D4E9FD;color:#000000">
+                                        <td width="50%" style="border: none;">Round Off Value:</td>
+                                        <td width="5%" style="border: none;border-right: 1px solid black;text-align: left;">:</td>
+                                            <td style="border: none;text-align: right;"><b>&#8377;0.20</b></td>
+                                    </tr>
+                                <tr style="background-color: #D4E9FD;color:#000000">
+                                    <td width="50%" style="border: none;">Total Amount After Tax:</td>
+                                    <td width="5%" style="border: none;border-right: 1px solid black;text-align: left;">:</td>
+                                        <td style="border: none;text-align: right;"> &#8377;  <b>14054.00</b></td>
+                                </tr>
+                                <tr style="background-color: #D4E9FD;color:#000000">
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table cellspacing="0px" cellpadding="0px" style="width: 100%;height: 100%;border:1px solid black;border-top: none;break-inside: avoid  !important;">
+        <tr>
+            <td colspan="1" style="width: 65%;border: none;padding:8px;float: left;border-top: 1px solid white"><br>
+                <b>Terms And Conditions</b><br>
+                <span style="line-height: 17px;font-size: 14px;">1. This is an electronically generated invoice.</span><br>
+                <span style="line-height: 17px;font-size: 14px;">2. All disputes are subject to Mumbai jurisdiction.</span>
+            </td>
+            <td  colspan="2" style="width: 33%;padding: 0px;text-align: center;border:none;float: right;border-left: 1px solid black;border-top: 1px solid white">
+                <table cellpadding="0px" cellspacing="0px" style="height: 100% ;width: 100%; padding:0px">
+                    <tr><td style="vertical-align: bottom;border:none;text-align: center;height:35px">Certified that the particular given above are true and correct</td></tr>
+                    <tr><td style="vertical-align: top;border:none;text-align: center;font-size: 17px;line-height: 21px;"><b>For,  company_name </b></td></tr>
+                    <tr>
+                        <td style="vertical-align:middle;border:none;">
+                            <center><img style="height: 50px;width: 50px;" src="https://gimbooks-media-prod-bucket.s3.ap-south-1.amazonaws.com/media/media/signature/signature.png"> </center></td>
+                      
+                    </tr>
+                    <tr><td style="vertical-align: bottom;text-align: center;height: 25px;border:none;">Signature</td></tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+  
+</div>
+</body>
+</html>

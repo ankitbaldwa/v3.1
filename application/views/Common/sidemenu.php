@@ -149,16 +149,6 @@
 
         </li>
 
-        <li class="<?= ($this->uri->segment(1) == LEDGER)?'active':'' ?>">
-
-          <a href="<?= site_url(LEDGER) ?>">
-
-            <i class="fa fa-file-text-o"></i> <span>Ledgers</span>
-
-          </a>
-
-        </li>
-
         <li class="treeview">
 
           <a href="#">
@@ -186,6 +176,16 @@
             <li class="<?= ($this->uri->segment(1) == CUSTOMER_REPORT)?'active':'' ?>"><a href="<?= site_url(CUSTOMER_REPORT) ?>"><i class="fa fa-circle-o"></i> Customer Report</a></li>
 
             <li class="<?= ($this->uri->segment(1) == PAYMENT_REPORT)?'active':'' ?>"><a href="<?= site_url(PAYMENT_REPORT) ?>"><i class="fa fa-circle-o"></i> Payment Report</a></li>
+
+            <li class="<?= ($this->uri->segment(1) == LEDGER)?'active':'' ?>">
+
+              <a href="<?= site_url(LEDGER) ?>">
+
+                <i class="fa fa-circle-o"></i> <span>Ledgers</span>
+
+              </a>
+
+            </li>
 
           </ul>
 

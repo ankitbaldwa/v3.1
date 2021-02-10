@@ -174,6 +174,24 @@ class Reports_model extends CI_Model
             $this->db->group_by($group);
         return $this->db->get($table)->result();
     }
+    public function GetDataGSTAll($table, $condition = '', $order = '', $group = '', $limit = '')
+    {
+        $feilds = array('i.id', 'CONCAT(c.FirstName, " " ,c.LastName) as customer_name', 'c.GST_no','c.Address', 'c.City','c.State', 's.state_code','c.Zip','c.Country','c.place', 'i.invoice_no', 'i.invoice_date', 'i.Netammount', 'i.Balance_Amount', 'i.Status','i.Gross_amount','i.CGST_percentage', 'i.SGST_percentage', 'i.CGST', 'i.SGST', 'i.IGST_percentage', 'i.IGST', 'i.CESS','i.CESS_value','i.TCS_percentage', 'i.TCS', 'itm.Hsn_code', 'p.Name', 'itm.Hsn_code', 'itm.Qty','p.Unit', 'itm.Price', 'itm.Amount');
+        $this->db->select($feilds);
+        $this->db->join('customers c', 'i.Customer_id = c.id');
+        $this->db->join('mst_states s', 'c.State = s.state_name');
+        $this->db->join('invoice_items itm', 'i.id = itm.Invoice_id');
+        $this->db->join('products p', 'p.id = itm.Product_id');
+        if ($condition != '')
+            $this->db->where($condition);
+        if ($order != '')
+            $this->db->order_by($order);
+        if ($limit != '')
+            $this->db->limit($limit);
+        if ($group != '')
+            $this->db->group_by($group);
+        return $this->db->get($table)->result();
+    }
     public function GetDataAllPayment($table, $condition = '', $order = '', $group = '', $limit = '')
     {
         $feilds = array('p.payment_date','p.receipt_no', 'p.billed_amount', 'p.payed_amount', 'p.balance_amount', 'p.payment_type', 'p.status', 'u.username', 'c.FirstName', 'c.LastName', 'i.invoice_no');

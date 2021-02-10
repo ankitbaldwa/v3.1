@@ -560,12 +560,12 @@ class Invoices extends Admin_Parent {
         $last_id2 = $this->Invoices_model->SaveData($table2,$data2);
         /** Saving data in ledger */
         $bal = $this->Mymodel->GetDataCount('ledger', array('sum(dr_amount) as dr_amount', 'sum(cr_amount) as cr_amount'), "customer_id=".$_POST['customer_id']);
-       $op_bal = $this->Mymodel->GetDataCount('customers', array('Balance_as_on', 'Type', 'Opening_balance'), "id=".$_POST['customer_id']);
-       if($op_bal->Type == 'Dr'){
-            $balance_amt = ($op_bal->Opening_balance + $bal->dr_amount) - ($bal->cr_amount + $_POST['payed_amount']);
-       } else {
-            $balance_amt = ($op_bal->Opening_balance + $bal->cr_amount) - ($bal->dr_amount + $_POST['payed_amount']);
-       }
+        $op_bal = $this->Mymodel->GetDataCount('customers', array('Balance_as_on', 'Type', 'Opening_balance'), "id=".$_POST['customer_id']);
+        if($op_bal->Type == 'Dr'){
+                $balance_amt = ($op_bal->Opening_balance + $bal->dr_amount) - ($bal->cr_amount + $_POST['payed_amount']);
+        } else {
+                $balance_amt = ($op_bal->Opening_balance + $bal->cr_amount) - ($bal->dr_amount + $_POST['payed_amount']);
+        }
        //print_r($bal);print_r($op_bal);print_r($balance_amt);exit;
         $ledger_data = array(
             'user_id' => id,

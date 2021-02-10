@@ -169,15 +169,20 @@ class Customers extends Admin_Parent {
             $this->load->view('layout', $data); 
     }
     public function Payments_action(){
-        $data = $this->Customers_model->GetFieldData("invoice",array('id','invoice_no','invoice_date','Balance_Amount'),"Customer_id = ".$_POST['customer_id']." and user_id = ".id."","","","","");
+        $data = $this->Customers_model->GetFieldData("invoice",array('id','invoice_no','invoice_date','Balance_Amount'),"Customer_id = ".$_POST['customer_id']." and user_id = ".id." and Status='Pending'","","","","");
         $outstanding_amt = $_POST['payed_amount'];
         $total = 0;
         $myArray = explode('/', $_POST['receipt_no']);
+        $last_id2 = 0;
+        //echo "<pre/>";print_r($data);print_r($_POST);exit;
         foreach($data as $value){
-            $outstanding_amt = $outstanding_amt - $value->Balance_Amount;
             $receipt = $myArray[0].'/'.$myArray[1].'/'.++$myArray[2];
-            if($outstanding_amt > 0){
-                $invoice = $this->Invoices_model->SaveData("invoice",array('Balance_Amount' => 0,'Status' => 'Completed'),'id='.$value->id);
+            if($outstanding_amt < $value->Balance_Amount){
+                /** If paid less than billed amount */
+                $outstanding_amt = (int) $value->Balance_Amount - (int) $outstanding_amt;
+                $status = 'Pending';
+                $paid_amt = (int) $value->Balance_Amount - (int) $outstanding_amt;
+                $invoice = $this->Invoices_model->SaveData("invoice",array('Balance_Amount' => $outstanding_amt,'Status' => $status),'id='.$value->id);
                 $payment = array(
                     'user_id' => id,
                     'invoice_id' => $value->id,
@@ -185,34 +190,7 @@ class Customers extends Admin_Parent {
                     'receipt_no' => $receipt,
                     'payment_date' => date('Y-m-d', strtotime(str_replace('-', '/', $_POST['payment_date']))),
                     'billed_amount' => $value->Balance_Amount,
-                    'payed_amount' => $value->Balance_Amount,
-                    'payment_type' => $_POST['payment_type'],
-                    'payment_description' => $_POST['payment_description'],
-                    'balance_amount' => 0,
-                    'timestamp'=>date('Y-m-d H:i:s'),
-                    'created'=>date('Y-m-d H:i:s'),
-                    'status' => 'Completed'
-                );
-                $last_id2 = $this->Invoices_model->SaveData("invoice_payments",$payment);
-                $userLogs_data = array(
-                    'user_id'=>id,
-                    'device_info'=>$_SERVER['HTTP_USER_AGENT'],
-                    'description'=>'Invoices Payment Received by '.name.' with Receipt no '.$receipt,
-                    'ip_address'=>$_SERVER['SERVER_ADDR']
-                );
-                $result = $this->Mymodel->SaveData('user_logs', $userLogs_data );
-                $total = $total + $value->Balance_Amount;
-            } else {
-                $outstanding_amt = $value->Balance_Amount - ($_POST['payed_amount'] - $total);
-                $invoice = $this->Invoices_model->SaveData("invoice",array('Balance_Amount' => $outstanding_amt),'id='.$value->id);
-                $payment = array(
-                    'user_id' => id,
-                    'invoice_id' => $value->id,
-                    'customer_id' => $_POST['customer_id'],
-                    'receipt_no' => $receipt,
-                    'payment_date' => date('Y-m-d', strtotime(str_replace('-', '/', $_POST['payment_date']))),
-                    'billed_amount' => $value->Balance_Amount,
-                    'payed_amount' => ($_POST['payed_amount'] - $total),
+                    'payed_amount' => $paid_amt,
                     'payment_type' => $_POST['payment_type'],
                     'payment_description' => $_POST['payment_description'],
                     'balance_amount' => $outstanding_amt,
@@ -220,11 +198,134 @@ class Customers extends Admin_Parent {
                     'created'=>date('Y-m-d H:i:s'),
                     'status' => 'Completed'
                 );
+                //print_r($payment);echo "<br/>";
                 $last_id2 = $this->Invoices_model->SaveData("invoice_payments",$payment);
+                $this->_save_ledger_data($payment, $last_id2);
+                $this->_log_entry($receipt);
                 break;
+            } else {
+                $outstanding_amt = (int) $outstanding_amt - (int) $value->Balance_Amount;
+                if($outstanding_amt == 0){
+                    /** If paid full billed amount */
+                    $status = 'Completed';
+                    //print_r($status);
+                    $invoice = $this->Invoices_model->SaveData("invoice",array('Balance_Amount' => $outstanding_amt,'Status' => $status),'id='.$value->id);
+                    $payment = array(
+                        'user_id' => id,
+                        'invoice_id' => $value->id,
+                        'customer_id' => $_POST['customer_id'],
+                        'receipt_no' => $receipt,
+                        'payment_date' => date('Y-m-d', strtotime(str_replace('-', '/', $_POST['payment_date']))),
+                        'billed_amount' => $value->Balance_Amount,
+                        'payed_amount' => $value->Balance_Amount,
+                        'payment_type' => $_POST['payment_type'],
+                        'payment_description' => $_POST['payment_description'],
+                        'balance_amount' => $outstanding_amt,
+                        'timestamp'=>date('Y-m-d H:i:s'),
+                        'created'=>date('Y-m-d H:i:s'),
+                        'status' => 'Completed'
+                    );
+                    //print_r($payment);echo "<br/>";
+                    $last_id2 = $this->Invoices_model->SaveData("invoice_payments",$payment);
+                    $this->_save_ledger_data($payment, $last_id2);
+                    $this->_log_entry($receipt);
+                    break;
+                } else {
+                    /** If paid 2 - 3 billed amount */
+                    $status = 'Completed';
+                    $invoice = $this->Invoices_model->SaveData("invoice",array('Balance_Amount' => 0,'Status' => $status),'id='.$value->id);
+                    //echo "<br/>";print_r($value->Balance_Amount);echo "<br/>";print_r($outstanding_amt);echo "<br/>";
+                    $paid_amt = (int) $value->Balance_Amount;
+                    $balance = (int) $value->Balance_Amount - (int) $paid_amt;
+                   // print_r($paid_amt);echo "<br/>";
+                    $payment = array(
+                        'user_id' => id,
+                        'invoice_id' => $value->id,
+                        'customer_id' => $_POST['customer_id'],
+                        'receipt_no' => $receipt,
+                        'payment_date' => date('Y-m-d', strtotime(str_replace('-', '/', $_POST['payment_date']))),
+                        'billed_amount' => $value->Balance_Amount,
+                        'payed_amount' => $paid_amt,
+                        'payment_type' => $_POST['payment_type'],
+                        'payment_description' => $_POST['payment_description'],
+                        'balance_amount' => $balance,
+                        'timestamp'=>date('Y-m-d H:i:s'),
+                        'created'=>date('Y-m-d H:i:s'),
+                        'status' => 'Completed'
+                    );
+                    //print_r($payment);echo "<br/>";
+                    $last_id2 = $this->Invoices_model->SaveData("invoice_payments",$payment);
+                    $this->_save_ledger_data($payment, $last_id2);
+                    $this->_log_entry($receipt);
+                }
             }
-        }
+        }//exit;
         redirect(CUSTOMERS_VIEW.'/'.enc_dec(1,$_POST['customer_id']));
+    }
+    public function _save_ledger_data($payment_data, $payment_id){
+        /** Saving data in ledger */
+        $bal = $this->Mymodel->GetDataCount('ledger', array('sum(dr_amount) as dr_amount', 'sum(cr_amount) as cr_amount'), "customer_id=".$payment_data['customer_id']);
+        $op_bal = $this->Mymodel->GetDataCount('customers', array('Balance_as_on', 'Type', 'Opening_balance'), "id=".$payment_data['customer_id']);
+        if($op_bal->Type == 'Dr'){
+            $balance_amt = ($op_bal->Opening_balance + $bal->dr_amount) - ($bal->cr_amount + $payment_data['payed_amount']);
+        } else {
+            $balance_amt = ($op_bal->Opening_balance + $bal->cr_amount) - ($bal->dr_amount + $payment_data['payed_amount']);
+        }
+        $ledger_data = array(
+            'user_id' => id,
+            'customer_id' => $payment_data['customer_id'],
+            'invoice_id' => $payment_data['invoice_id'],
+            'payment_id' => $payment_id,
+            'transaction_date' => $payment_data['payment_date'],
+            'narration' => 'Amount received from customer in bank or cash',
+            'cr_amount'=> $payment_data['payed_amount'],
+            'balance_amount'=>$balance_amt,
+            'created' => date('Y-m-d H:i:s')
+        );
+        //echo "Ledger <br/>";print_r($ledger_data);echo "<br/>";echo "<br/>";
+        $ledger_result = $this->Mymodel->SaveData('ledger', $ledger_data );
+        /** Mail function starts here */
+        $table3 = "settings";
+        $table = "invoice i";
+        $cond = "i.id=".$payment_data['invoice_id'];
+        $data = $this->Invoices_model->GetInvcData($table,$cond);
+        $cond3 = "user_id=".id;
+        $data3 = $this->Invoices_model->GetFieldData($table3,'name, value', $cond3);
+        $user_data = $this->Invoices_model->GetFieldData('users','username,email,mobile',"id='".id."'",'','','1','1');
+        $mail = $this->Mymodel->GetData("mails_body","type='receipt_mail'");
+        $subject = $mail->subject;
+        $mail_body = $mail->body;
+        $subject = str_replace("{{invoice_no}}",$payment_data['receipt_no'],$subject);
+        $subject = str_replace("{{customer}}",$data->FirstName.' '.$data->LastName,$subject);
+        $mail_body = str_replace("{{invoice_no}}",$data->invoice_no,$mail_body);
+        $mail_body = str_replace("{{receipt_no}}",$payment_data['receipt_no'],$mail_body);
+        $mail_body = str_replace("{{customer}}",$data->FirstName.' '.$data->LastName,$mail_body);
+        $mail_body = str_replace("{name}",$user_data->username,$mail_body);
+        $mail_body = str_replace("{{amount_paid}}","Rs. ".moneyFormatIndia($payment_data['payed_amount']),$mail_body);
+        $mail_body = str_replace("{{billed_amount}}","Rs. ".moneyFormatIndia($payment_data['billed_amount']),$mail_body);
+        $mail_body = str_replace("{{balance_amount}}","Rs. ".moneyFormatIndia($payment_data['balance_amount']),$mail_body);
+        $mail_body = str_replace("{{amount_words}}",convert_number($payment_data['payed_amount']),$mail_body);
+        $mail_body = str_replace("{{bill_date}}",date('d-m-Y', strtotime(str_replace('-', '/', $payment_data['payment_date']))),$mail_body);
+        $mail_body = str_replace("{{type}}",$payment_data['payment_type'],$mail_body);
+        $mail_body = str_replace("{{description}}",$payment_data['payment_description'],$mail_body);
+        $mail_body = str_replace("{{conpany_name}}",$data3[0]->value,$mail_body);
+        if(!empty($data->Email)){
+            $email = array($user_data->email,$data->Email);
+        } else {
+            $email = array($user_data->email,'b.ankit@accordance.co.in');
+        }
+        //print_r($mail_body);
+        $this->custom->sendEmailSmtp($subject,$mail_body,$email,"", array($data3[12]->value,$data3[0]->value));
+        /** Mail function ends here */
+    }
+    public function _log_entry($receipt){
+        $userLogs_data = array(
+            'user_id'=>id,
+            'device_info'=>$_SERVER['HTTP_USER_AGENT'],
+            'description'=>'Invoices Payment Received by '.name.' with Receipt no '.$receipt,
+            'ip_address'=>$_SERVER['SERVER_ADDR']
+        );
+       $result = $this->Mymodel->SaveData('user_logs', $userLogs_data );
     }
     public function update_action()
     {

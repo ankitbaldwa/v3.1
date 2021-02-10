@@ -75,7 +75,7 @@
                             </div>
                             <div class="col-md-1"></div>
                             <div class="col-md-5">
-                              <div class="form-group">
+                                <div class="form-group">
                                   <label for="payment_type">Payment Type <span class="text text-danger">*</span></label>
                                   <div class="radio">
                                     <label class="radio-inline"><input type="radio" id="payment_type" name="payment_type" value="Cash"/> Cash</label>

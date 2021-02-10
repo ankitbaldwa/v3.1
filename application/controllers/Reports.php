@@ -280,7 +280,7 @@ class Reports extends Admin_Parent {
         //save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
         //if you want to save it as.XLSX Excel 2007 format
  
-        //$objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007'); 
+        //$objWriter = PHPExcel_IOFactory::createWriter($spreadsheet, 'Excel2007'); 
  
         //force user to download the Excel file without writing it to server's HD
         //$objWriter->save('php://output');
@@ -359,139 +359,192 @@ class Reports extends Admin_Parent {
         } else {
             $cond = "i.user_id=".id ."";
         }
-        $userData=$this->Reports_model->GetDataAll($table,$cond);
-        $taxdetails = $this->Reports_model->GetFieldData('mst_taxes', "name, value","user_id=".id."","","");
+        $userData=$this->Reports_model->GetDataGSTAll($table,$cond);
         //print_r($userData);exit;
         //load our new PHPExcel library
         $this->load->library('excel');
-        ob_start();
+        $spreadsheet = new Spreadsheet();
         // Set document properties
-		$this->excel->getProperties()->setCreator(LOGO)
+		$spreadsheet->getProperties()->setCreator(LOGO)
                                     ->setLastModifiedBy(name)
-                                    ->setTitle("GST Report")
+                                    ->setTitle("GSTR1 Invoice Report")
                                     ->setSubject("")
                                     ->setDescription("")
                                     ->setKeywords("")
                                     ->setCategory("");
         //activate worksheet number 1
-        $this->excel->setActiveSheetIndex(0);
+        $spreadsheet->setActiveSheetIndex(0);
         //name the worksheet
-        $this->excel->getActiveSheet()->setTitle('GST Report');
+        $spreadsheet->getActiveSheet()->setTitle('GSTR1 Invoice Report');
         //set cell A1 content with some text
         if($_POST['start'] != '' && $_POST['end'] != ''){
             $start = date('d-M-Y',strtotime($_POST['start']));
             $end = date('d-M-Y',strtotime($_POST['end']));
-            $this->excel->getActiveSheet()->setCellValue('A1', 'GST Report For '.$start.' To '. $end);
+            $spreadsheet->getActiveSheet()->setCellValue('A1', 'GSTR1 Invoice Report For '.$start.' To '. $end);
         } else {
-            $this->excel->getActiveSheet()->setCellValue('A1', 'GST Report');
+            $spreadsheet->getActiveSheet()->setCellValue('A1', 'GSTR1 Invoice Report');
         }
         //change the font size
-        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
         //make the font become bold
-        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('A2:L2')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('A2:AA2')->getFont()->setBold(true);
         //merge cell A1 until D1
-        $this->excel->getActiveSheet()->mergeCells('A1:K1');
-        $this->excel->getActiveSheet()->getColumnDimensionByColumn('A2:J2')->setAutoSize(false);
-        $this->excel->getActiveSheet()->setCellValue('A2', 'Sr No.');
-        $this->excel->getActiveSheet()->getColumnDimension('A')->setWidth('4.42');
-        $this->excel->getActiveSheet()->setCellValue('B2', 'Invoice No');
-        $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth('14');
-        $this->excel->getActiveSheet()->setCellValue('C2', 'Invoice Date');
-        $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth('12');
-        $this->excel->getActiveSheet()->setCellValue('D2', 'Gross Amount');
-        $this->excel->getActiveSheet()->getColumnDimension('D')->setWidth('12');
-        $this->excel->getActiveSheet()->setCellValue('E2', 'CGST ('.$taxdetails[0]->value.'%)');
-        $this->excel->getActiveSheet()->getColumnDimension('E')->setWidth('11');
-        $this->excel->getActiveSheet()->setCellValue('F2', 'SGST ('.$taxdetails[1]->value.'%)');
-        $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth('11');
-        $this->excel->getActiveSheet()->setCellValue('G2', 'IGST ('.$taxdetails[2]->value.'%)');
-        $this->excel->getActiveSheet()->getColumnDimension('G')->setWidth('11');
-        $this->excel->getActiveSheet()->setCellValue('H2', 'CESS ('.$taxdetails[3]->value.'%)');
-        $this->excel->getActiveSheet()->getColumnDimension('H')->setWidth('11');
-        $this->excel->getActiveSheet()->setCellValue('I2', 'TCS ('.$taxdetails[4]->value.'%)');
-        $this->excel->getActiveSheet()->getColumnDimension('I')->setWidth('11');
-        $this->excel->getActiveSheet()->setCellValue('J2', 'Total Tax Amount');
-        $this->excel->getActiveSheet()->getColumnDimension('J')->setWidth('12');
-        $this->excel->getActiveSheet()->setCellValue('K2', 'Status');
-        $this->excel->getActiveSheet()->getColumnDimension('K')->setWidth('10');
+        $spreadsheet->getActiveSheet()->mergeCells('A1:AA1');
+        $spreadsheet->getActiveSheet()->getColumnDimensionByColumn('A2:AA2')->setAutoSize(false);
+        $spreadsheet->getActiveSheet()->setCellValue('A2', 'Sr No.');
+        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth('4.42');
+        $spreadsheet->getActiveSheet()->setCellValue('B2', 'Invoice Date');
+        $spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth('12');
+        $spreadsheet->getActiveSheet()->setCellValue('C2', 'Invoice Number');
+        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth('14');
+        $spreadsheet->getActiveSheet()->setCellValue('D2', 'Customer Billing Name');
+        $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth('18');
+        $spreadsheet->getActiveSheet()->setCellValue('E2', 'Customer Billing GSTIN');
+        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth('18');
+        $spreadsheet->getActiveSheet()->setCellValue('F2', 'State Place of Supply');
+        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth('14');
+        $spreadsheet->getActiveSheet()->setCellValue('G2', 'Item Description');
+        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth('18');
+        $spreadsheet->getActiveSheet()->setCellValue('H2', 'HSN or SAC code');
+        $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth('10');
+        $spreadsheet->getActiveSheet()->setCellValue('I2', 'Item Quantity');
+        $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth('12');
+        $spreadsheet->getActiveSheet()->setCellValue('J2', 'Item Unit of Measurement');
+        $spreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth('14');
+        $spreadsheet->getActiveSheet()->setCellValue('K2', 'Item Rate');
+        $spreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth('8');
+        $spreadsheet->getActiveSheet()->setCellValue('L2', 'Item Taxable value');
+        $spreadsheet->getActiveSheet()->getColumnDimension('L')->setWidth('14');
+        $spreadsheet->getActiveSheet()->setCellValue('M2', 'CGST Rate');
+        $spreadsheet->getActiveSheet()->getColumnDimension('M')->setWidth('8');
+        $spreadsheet->getActiveSheet()->setCellValue('N2', 'CGST Amount');
+        $spreadsheet->getActiveSheet()->getColumnDimension('N')->setWidth('12');
+        $spreadsheet->getActiveSheet()->setCellValue('O2', 'SGST Rate');
+        $spreadsheet->getActiveSheet()->getColumnDimension('O')->setWidth('8');
+        $spreadsheet->getActiveSheet()->setCellValue('P2', 'SGST Amount');
+        $spreadsheet->getActiveSheet()->getColumnDimension('P')->setWidth('12');
+        $spreadsheet->getActiveSheet()->setCellValue('Q2', 'IGST Rate');
+        $spreadsheet->getActiveSheet()->getColumnDimension('Q')->setWidth('8');
+        $spreadsheet->getActiveSheet()->setCellValue('R2', 'IGST Amount');
+        $spreadsheet->getActiveSheet()->getColumnDimension('R')->setWidth('12');    
+        $spreadsheet->getActiveSheet()->setCellValue('S2', 'CESS Rate');
+        $spreadsheet->getActiveSheet()->getColumnDimension('S')->setWidth('8');
+        $spreadsheet->getActiveSheet()->setCellValue('T2', 'CESS Amount');
+        $spreadsheet->getActiveSheet()->getColumnDimension('T')->setWidth('12');
+        $spreadsheet->getActiveSheet()->setCellValue('U2', 'TCS Rate');
+        $spreadsheet->getActiveSheet()->getColumnDimension('U')->setWidth('8');
+        $spreadsheet->getActiveSheet()->setCellValue('V2', 'TCS Amount');
+        $spreadsheet->getActiveSheet()->getColumnDimension('V')->setWidth('12');
+        $spreadsheet->getActiveSheet()->setCellValue('W2', 'My GSTIN');
+        $spreadsheet->getActiveSheet()->getColumnDimension('W')->setWidth('18');
+        $spreadsheet->getActiveSheet()->setCellValue('X2', 'Customer Billing Address');
+        $spreadsheet->getActiveSheet()->getColumnDimension('X')->setWidth('16');
+        $spreadsheet->getActiveSheet()->setCellValue('Y2', 'Customer Billing City');
+        $spreadsheet->getActiveSheet()->getColumnDimension('Y')->setWidth('14');
+        $spreadsheet->getActiveSheet()->setCellValue('Z2', 'Customer Billing State');
+        $spreadsheet->getActiveSheet()->getColumnDimension('Z')->setWidth('14');
+        $spreadsheet->getActiveSheet()->setCellValue('AA2', 'Total Transaction Value');
+        $spreadsheet->getActiveSheet()->getColumnDimension('AA')->setWidth('14');
         //set aligment to center for that merged cell (A1 to J1)
-        $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $this->excel->getActiveSheet()->getStyle('A2:K2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $this->excel->getActiveSheet()->getStyle('A2:K2')->getAlignment()->setWrapText(true)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER );
-        $this->excel->getActiveSheet()->getRowDimension('1')->setRowHeight(45);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $spreadsheet->getActiveSheet()->getStyle('A2:AA2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $spreadsheet->getActiveSheet()->getStyle('A2:AA2')->getAlignment()->setWrapText(true)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER );
+        $spreadsheet->getActiveSheet()->getStyle('G')->getAlignment()->setWrapText(true)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER );
+        $spreadsheet->getActiveSheet()->getStyle('G')->getAlignment()->setWrapText(true)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER );
+        $spreadsheet->getActiveSheet()->getStyle('X')->getAlignment()->setWrapText(true)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER );
+        $spreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(45);
         $a = 4;
         $sr = 1;
         $gross=0; $tax=0;
         foreach($userData as $data){
-            $this->excel->getActiveSheet()->setCellValue('A'.$a, $sr);
-            $this->excel->getActiveSheet()->setCellValue('B'.$a, ($data->invoice_no !='')?$data->invoice_no:'N/A');
-            $this->excel->getActiveSheet()->setCellValue('C'.$a, date('d-M-Y',strtotime($data->invoice_date)));
-            $this->excel->getActiveSheet()->setCellValue('D'.$a,(float) $data->Gross_amount );
-            $gross += (float) $data->Gross_amount; 
-            $this->excel->getActiveSheet()->getStyle('D'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
-            $this->excel->getActiveSheet()->setCellValue('E'.$a,(float) $data->CGST );
-            $this->excel->getActiveSheet()->getStyle('E'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
-            $this->excel->getActiveSheet()->setCellValue('F'.$a,(float) $data->SGST );
-            $this->excel->getActiveSheet()->getStyle('F'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
-            $this->excel->getActiveSheet()->setCellValue('G'.$a,(float) $data->IGST );
-            $this->excel->getActiveSheet()->getStyle('G'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
-            $this->excel->getActiveSheet()->setCellValue('H'.$a,(float) $data->CESS );
-            $this->excel->getActiveSheet()->getStyle('H'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
-            $this->excel->getActiveSheet()->setCellValue('I'.$a,(float) $data->TCS );
-            $this->excel->getActiveSheet()->getStyle('I'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
-            if($usersData->IGST != 0){
-                $this->excel->getActiveSheet()->setCellValue('J'.$a,(float) $data->IGST + (float) $data->CESS + (float) $data->TCS );
-            }
-            else
-                $this->excel->getActiveSheet()->setCellValue('J'.$a,(float) $data->CGST + (float) $data->SGST + (float) $data->CESS + (float) $data->TCS);
-            $tax += (float) ((float) $data->CGST + (float) $data->SGST + (float) $data->IGST + (float) $data->CESS + (float) $data->TCS); 
-            $this->excel->getActiveSheet()->getStyle('J'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
-            $this->excel->getActiveSheet()->setCellValue('K'.$a, $data->Status);
-            $this->excel->getActiveSheet()->getStyle('K'.$a)->getFont()->setBold(true);
-            $this->excel->getActiveSheet()->getStyle('K'.$a)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->setCellValue('A'.$a, $sr);
+            $spreadsheet->getActiveSheet()->setCellValue('B'.$a, date('d-M-Y',strtotime($data->invoice_date)));
+            $spreadsheet->getActiveSheet()->setCellValue('C'.$a, ($data->invoice_no !='')?$data->invoice_no:'N/A');
+            $spreadsheet->getActiveSheet()->setCellValue('D'.$a,$data->customer_name );
+            //$spreadsheet->getActiveSheet()->getStyle('D'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
+            $spreadsheet->getActiveSheet()->setCellValue('E'.$a,$data->GST_no );
+            $spreadsheet->getActiveSheet()->setCellValue('F'.$a,$data->state_code.' - '.$data->State);
+            $spreadsheet->getActiveSheet()->setCellValue('G'.$a,$data->Name );
+            $spreadsheet->getActiveSheet()->setCellValue('H'.$a,$data->Hsn_code );
+            $spreadsheet->getActiveSheet()->setCellValue('I'.$a,$data->Qty );
+            $spreadsheet->getActiveSheet()->setCellValue('J'.$a,$data->Unit );
+            $spreadsheet->getActiveSheet()->setCellValue('K'.$a, $data->Price);
+            $spreadsheet->getActiveSheet()->getStyle('K'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
+            $spreadsheet->getActiveSheet()->setCellValue('L'.$a, $data->Amount);
+            $spreadsheet->getActiveSheet()->getStyle('L'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
+            $spreadsheet->getActiveSheet()->setCellValue('M'.$a, $data->CGST_percentage);
+            $spreadsheet->getActiveSheet()->setCellValue('N'.$a, $data->CGST);
+            $spreadsheet->getActiveSheet()->getStyle('N'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
+            $spreadsheet->getActiveSheet()->setCellValue('O'.$a, $data->SGST_percentage);
+            $spreadsheet->getActiveSheet()->setCellValue('P'.$a, $data->SGST);
+            $spreadsheet->getActiveSheet()->getStyle('P'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
+            $spreadsheet->getActiveSheet()->setCellValue('Q'.$a, $data->IGST_percentage);
+            $spreadsheet->getActiveSheet()->setCellValue('R'.$a, $data->IGST);
+            $spreadsheet->getActiveSheet()->getStyle('R'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
+            $spreadsheet->getActiveSheet()->setCellValue('S'.$a, $data->CESS_value);
+            $spreadsheet->getActiveSheet()->setCellValue('T'.$a, $data->CESS);
+            $spreadsheet->getActiveSheet()->getStyle('T'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
+            $spreadsheet->getActiveSheet()->setCellValue('U'.$a, $data->TCS_percentage);
+            $spreadsheet->getActiveSheet()->setCellValue('V'.$a, $data->TCS);
+            $spreadsheet->getActiveSheet()->getStyle('V'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
+            $spreadsheet->getActiveSheet()->setCellValue('W'.$a, GST_NUMBER);
+            $spreadsheet->getActiveSheet()->setCellValue('X'.$a, $data->Address);
+            $spreadsheet->getActiveSheet()->setCellValue('Y'.$a, $data->City);
+            $spreadsheet->getActiveSheet()->setCellValue('Z'.$a, $data->State);
+            $spreadsheet->getActiveSheet()->setCellValue('AA'.$a, $data->Netammount);
+            $spreadsheet->getActiveSheet()->getStyle('AA'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
+            //$spreadsheet->getActiveSheet()->getStyle('K'.$a)->getFont()->setBold(true);
+            //$spreadsheet->getActiveSheet()->getStyle('K'.$a)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
             $a++;
             $sr++;
         }
-        $this->excel->getActiveSheet()->setCellValue('B'.($a+1), 'Total');
-        $this->excel->getActiveSheet()->getStyle('B'.($a+1))->getFont()->setBold(true); 
-        $this->excel->getActiveSheet()->getStyle('B'.($a+1))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT); 
-        $this->excel->getActiveSheet()->setCellValue('D'.($a+1), $gross);
-        $this->excel->getActiveSheet()->getStyle('D'.($a+1))->getFont()->setBold(true);  
-        $this->excel->getActiveSheet()->getStyle('D'.($a+1))->getNumberFormat()->setFormatCode('#,##0.00');
-        $this->excel->getActiveSheet()->setCellValue('J'.($a+1), $tax);
-        $this->excel->getActiveSheet()->getStyle('J'.($a+1))->getFont()->setBold(true);  
-        $this->excel->getActiveSheet()->getStyle('J'.($a+1))->getNumberFormat()->setFormatCode('#,##0.00');
+        //$spreadsheet->getActiveSheet()->setCellValue('B'.($a+1), 'Total');
+        //$spreadsheet->getActiveSheet()->getStyle('B'.($a+1))->getFont()->setBold(true); 
+        //$spreadsheet->getActiveSheet()->getStyle('B'.($a+1))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT); 
+        //$spreadsheet->getActiveSheet()->setCellValue('D'.($a+1), $gross);
+        //$spreadsheet->getActiveSheet()->getStyle('D'.($a+1))->getFont()->setBold(true);  
+        //$spreadsheet->getActiveSheet()->getStyle('D'.($a+1))->getNumberFormat()->setFormatCode('#,##0.00');
+        //$spreadsheet->getActiveSheet()->setCellValue('J'.($a+1), $tax);
+        //$spreadsheet->getActiveSheet()->getStyle('J'.($a+1))->getFont()->setBold(true);  
+        //$spreadsheet->getActiveSheet()->getStyle('J'.($a+1))->getNumberFormat()->setFormatCode('#,##0.00');
         //Adding border to excel
-        $this->excel->getActiveSheet()->getStyle("A1:K".($a+2))->applyFromArray(
-            array(
-                'borders' => array(
-                    'allborders' => array(
-                        'style' => PHPExcel_Style_Border::BORDER_THIN
-                        //'color' => array('rgb' => 'DDDDDD')
-                    )
-                )
-            )
+        $styleArray = array(
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => array('argb' => '000000'),
+                ),
+            ),
         );
+        $spreadsheet->getActiveSheet()->getStyle("A1:AA".($a+2))->applyFromArray($styleArray);
+        $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
  
-        $filename='GST_Report.xlsx'; //save our workbook as this file name
+        $filename='GSTR1_Invoice_Report.xlsx'; //save our workbook as this file name
  
         ob_end_clean();
-        header('Content-Type: application/vnd.ms-excel'); //mime type
+        $writer = new Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. $filename);
+        header('Cache-Control: max-age=0');
+        $writer->setPreCalculateFormulas(true);
+        $writer->save('php://output'); // download file
+        //ob_end_clean();
+        //header('Content-Type: application/vnd.ms-excel'); //mime type
  
-        header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
+        //header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
  
-        header("Pragma: no-cache");
-        header("Expires: 0");
-        header('Cache-Control: max-age=0'); //no cache
-        ob_get_clean();          
+        //header("Pragma: no-cache");
+        //header("Expires: 0");
+        //header('Cache-Control: max-age=0'); //no cache
+        //ob_get_clean();          
         //save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
         //if you want to save it as.XLSX Excel 2007 format
  
-        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007'); 
+        //$objWriter = PHPExcel_IOFactory::createWriter($spreadsheet, 'Excel2007'); 
  
         //force user to download the Excel file without writing it to server's HD
-        $objWriter->save('php://output');
+        //$objWriter->save('php://output');
     }
     public function monthlyReport()
     {        
@@ -584,8 +637,9 @@ class Reports extends Admin_Parent {
         //print_r($userData);exit;
         //load our new PHPExcel library
         $this->load->library('excel');
+        $spreadsheet = new Spreadsheet();
         // Set document properties
-		$this->excel->getProperties()->setCreator(LOGO)
+		$spreadsheet->getProperties()->setCreator(LOGO)
                                     ->setLastModifiedBy(name)
                                     ->setTitle("Monthly Report")
                                     ->setSubject("")
@@ -593,68 +647,77 @@ class Reports extends Admin_Parent {
                                     ->setKeywords("")
                                     ->setCategory("");
         //activate worksheet number 1
-        $this->excel->setActiveSheetIndex(0);
+        $spreadsheet->setActiveSheetIndex(0);
         //name the worksheet
-        $this->excel->getActiveSheet()->setTitle('Monthly Report');
+        $spreadsheet->getActiveSheet()->setTitle('Monthly Report');
         //set cell A1 content with some text
-        $this->excel->getActiveSheet()->setCellValue('A1', 'Report for the month of '.$_POST['months']);
+        $spreadsheet->getActiveSheet()->setCellValue('A1', 'Report for the month of '.$_POST['months']);
         //change the font size
-        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
         //make the font become bold
-        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('A2:G2')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('A2:G2')->getFont()->setBold(true);
         //merge cell A1 until D1
-        $this->excel->getActiveSheet()->mergeCells('A1:G1');
-        $this->excel->getActiveSheet()->setCellValue('A2', 'Sr No.');			
-        $this->excel->getActiveSheet()->setCellValue('B2', 'Customer Name');
-        $this->excel->getActiveSheet()->setCellValue('C2', 'Invoice No');
-        $this->excel->getActiveSheet()->setCellValue('D2', 'Invoice Date');
-        $this->excel->getActiveSheet()->setCellValue('E2', 'Net Amount');
-        $this->excel->getActiveSheet()->setCellValue('F2', 'Balance Amount');
-        $this->excel->getActiveSheet()->setCellValue('G2', 'Status');
+        $spreadsheet->getActiveSheet()->mergeCells('A1:G1');
+        $spreadsheet->getActiveSheet()->setCellValue('A2', 'Sr No.');			
+        $spreadsheet->getActiveSheet()->setCellValue('B2', 'Customer Name');
+        $spreadsheet->getActiveSheet()->setCellValue('C2', 'Invoice No');
+        $spreadsheet->getActiveSheet()->setCellValue('D2', 'Invoice Date');
+        $spreadsheet->getActiveSheet()->setCellValue('E2', 'Net Amount');
+        $spreadsheet->getActiveSheet()->setCellValue('F2', 'Balance Amount');
+        $spreadsheet->getActiveSheet()->setCellValue('G2', 'Status');
         //set aligment to center for that merged cell (A1 to D1)
-        $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $this->excel->getActiveSheet()->getStyle('A2:G2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $spreadsheet->getActiveSheet()->getStyle('A2:G2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
         foreach(range('A','G') as $columnID)
         {
-            $this->excel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
+            $spreadsheet->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
         }
         $a = 4;
         $sr = 1;
         foreach($userData as $data){
-            $this->excel->getActiveSheet()->setCellValue('A'.$a, $sr);
-            $this->excel->getActiveSheet()->setCellValue('B'.$a, ucfirst($data->FirstName).' '.$data->LastName);
-            $this->excel->getActiveSheet()->setCellValue('C'.$a, ($data->invoice_no !='')?$data->invoice_no:'N/A');
-            $this->excel->getActiveSheet()->setCellValue('D'.$a, date('d-M-Y',strtotime($data->invoice_date)));
-            $this->excel->getActiveSheet()->setCellValue('E'.$a,moneyFormatIndia($data->Netammount) );
-            $this->excel->getActiveSheet()->setCellValue('F'.$a,moneyFormatIndia($data->Balance_Amount) );
-            $this->excel->getActiveSheet()->setCellValue('G'.$a, $data->Status);
-            $this->excel->getActiveSheet()->getStyle('G'.$a)->getFont()->setBold(true);
-            $this->excel->getActiveSheet()->getStyle('G'.$a)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->setCellValue('A'.$a, $sr);
+            $spreadsheet->getActiveSheet()->setCellValue('B'.$a, ucfirst($data->FirstName).' '.$data->LastName);
+            $spreadsheet->getActiveSheet()->setCellValue('C'.$a, ($data->invoice_no !='')?$data->invoice_no:'N/A');
+            $spreadsheet->getActiveSheet()->setCellValue('D'.$a, date('d-M-Y',strtotime($data->invoice_date)));
+            $spreadsheet->getActiveSheet()->setCellValue('E'.$a,moneyFormatIndia($data->Netammount) );
+            $spreadsheet->getActiveSheet()->setCellValue('F'.$a,moneyFormatIndia($data->Balance_Amount) );
+            $spreadsheet->getActiveSheet()->setCellValue('G'.$a, $data->Status);
+            $spreadsheet->getActiveSheet()->getStyle('G'.$a)->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('G'.$a)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
             $a++;
             $sr++;
         }
- 
+        
         $filename='Report_For_Month_'.$_POST['months'].'.xlsx'; //save our workbook as this file name
+        
+        $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
  
         ob_end_clean();
-		$objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
-        header('Content-Type: application/vnd.ms-excel'); //mime type
- 
-        header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
- 
+        $writer = new Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. $filename);
         header('Cache-Control: max-age=0');
+        $writer->setPreCalculateFormulas(true);
+        $writer->save('php://output'); // download file
+        //ob_end_clean();
+		//$objWriter = PHPExcel_IOFactory::createWriter($spreadsheet, 'Excel2007');
+        //header('Content-Type: application/vnd.ms-excel'); //mime type
+ 
+        //header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
+ 
+        //header('Cache-Control: max-age=0');
 		// If you're serving to IE 9, then the following may be needed
-		header('Cache-Control: max-age=1');
+		//header('Cache-Control: max-age=1');
 
 		// If you're serving to IE over SSL, then the following may be needed
-		header ('Expires: '.date('D, d M Y H:i:s')); // Date in the past
-		header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
-		header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-		header ('Pragma: public'); // HTTP/1.0 
+		//header ('Expires: '.date('D, d M Y H:i:s')); // Date in the past
+		//header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+		//header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+		//header ('Pragma: public'); // HTTP/1.0 
  
         //force user to download the Excel file without writing it to server's HD
-        $objWriter->save('php://output');
+        //$objWriter->save('php://output');
     }
     public function get_months() {
         $year = $this->Reports_model->GetData('mst_financial_year',"id=".$_POST['id']);
@@ -716,7 +779,7 @@ class Reports extends Admin_Parent {
             $nestedData[] = ($usersData->invoice_no !='')?$usersData->invoice_no:'N/A';
             $nestedData[] = date('d-M-Y',strtotime($usersData->invoice_date));
             $nestedData[] = '<i class="fa fa-inr"></i> '.moneyFormatIndia($usersData->Gross_amount);
-            $nestedData[] = '<i class="fa fa-inr"></i> '.moneyFormatIndia((float) $usersData->CGST + (float) $usersData->SGST);
+            $nestedData[] = '<i class="fa fa-inr"></i> '.moneyFormatIndia((float) $usersData->CGST + (float) $usersData->SGST + (float) $usersData->IGST);
             $nestedData[] = '<i class="fa fa-inr"></i> '.moneyFormatIndia($usersData->Netammount);
             $nestedData[] = '<i class="fa fa-inr"></i> '.moneyFormatIndia($usersData->Balance_Amount);
             $nestedData[] = $status;
@@ -746,9 +809,9 @@ class Reports extends Admin_Parent {
         //print_r($userData);exit;
         //load our new PHPExcel library
         $this->load->library('excel');
-        ob_start();
+        $spreadsheet = new Spreadsheet();
         // Set document properties
-		$this->excel->getProperties()->setCreator(LOGO)
+		$spreadsheet->getProperties()->setCreator(LOGO)
                                     ->setLastModifiedBy(name)
                                     ->setTitle("Outstanding Report")
                                     ->setSubject("")
@@ -756,70 +819,77 @@ class Reports extends Admin_Parent {
                                     ->setKeywords("")
                                     ->setCategory("");
         //activate worksheet number 1
-        $this->excel->setActiveSheetIndex(0);
+        $spreadsheet->setActiveSheetIndex(0);
         //name the worksheet
-        $this->excel->getActiveSheet()->setTitle('Outstanding Report');
+        $spreadsheet->getActiveSheet()->setTitle('Outstanding Report');
         //set cell A1 content with some text
-        $this->excel->getActiveSheet()->setCellValue('A1', 'Outstanding Report for the month of '.$_POST['months']);
+        $spreadsheet->getActiveSheet()->setCellValue('A1', 'Outstanding Report for the month of '.$_POST['months']);
         //change the font size
-        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
         //make the font become bold
-        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('A2:I2')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('A2:I2')->getFont()->setBold(true);
         //merge cell A1 until D1
-        $this->excel->getActiveSheet()->mergeCells('A1:I1');
-        $this->excel->getActiveSheet()->setCellValue('A2', 'Sr No.');			
-        $this->excel->getActiveSheet()->setCellValue('B2', 'Customer Name');
-        $this->excel->getActiveSheet()->setCellValue('C2', 'Invoice No');
-        $this->excel->getActiveSheet()->setCellValue('D2', 'Invoice Date');
-        $this->excel->getActiveSheet()->setCellValue('E2', 'Gross Amount');
-        $this->excel->getActiveSheet()->setCellValue('F2', 'Total Tax Amount');
-        $this->excel->getActiveSheet()->setCellValue('G2', 'Net Amount');
-        $this->excel->getActiveSheet()->setCellValue('H2', 'Balance Amount');
-        $this->excel->getActiveSheet()->setCellValue('I2', 'Status');
+        $spreadsheet->getActiveSheet()->mergeCells('A1:I1');
+        $spreadsheet->getActiveSheet()->setCellValue('A2', 'Sr No.');			
+        $spreadsheet->getActiveSheet()->setCellValue('B2', 'Customer Name');
+        $spreadsheet->getActiveSheet()->setCellValue('C2', 'Invoice No');
+        $spreadsheet->getActiveSheet()->setCellValue('D2', 'Invoice Date');
+        $spreadsheet->getActiveSheet()->setCellValue('E2', 'Gross Amount');
+        $spreadsheet->getActiveSheet()->setCellValue('F2', 'Total Tax Amount');
+        $spreadsheet->getActiveSheet()->setCellValue('G2', 'Net Amount');
+        $spreadsheet->getActiveSheet()->setCellValue('H2', 'Balance Amount');
+        $spreadsheet->getActiveSheet()->setCellValue('I2', 'Status');
         //set aligment to center for that merged cell (A1 to D1)
-        $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $this->excel->getActiveSheet()->getStyle('A2:I2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $spreadsheet->getActiveSheet()->getStyle('A2:I2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
         foreach(range('A','I') as $columnID)
         {
-            $this->excel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
+            $spreadsheet->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
         }
         $a = 4;
         $sr = 1;
         foreach($userData as $data){
-            $this->excel->getActiveSheet()->setCellValue('A'.$a, $sr);
-            $this->excel->getActiveSheet()->setCellValue('B'.$a, ucfirst($data->FirstName).' '.$data->LastName);
-            $this->excel->getActiveSheet()->setCellValue('C'.$a, ($data->invoice_no !='')?$data->invoice_no:'N/A');
-            $this->excel->getActiveSheet()->setCellValue('D'.$a, date('d-M-Y',strtotime($data->invoice_date)));
-            $this->excel->getActiveSheet()->setCellValue('E'.$a,moneyFormatIndia((float) $data->Gross_amount) );
-            $this->excel->getActiveSheet()->setCellValue('F'.$a,moneyFormatIndia((float) $data->CGST + (float) $data->SGST) );
-            $this->excel->getActiveSheet()->setCellValue('G'.$a,moneyFormatIndia($data->Netammount) );
-            $this->excel->getActiveSheet()->setCellValue('H'.$a,moneyFormatIndia($data->Balance_Amount) );
-            $this->excel->getActiveSheet()->setCellValue('I'.$a, $data->Status);
-            $this->excel->getActiveSheet()->getStyle('I'.$a)->getFont()->setBold(true);
-            $this->excel->getActiveSheet()->getStyle('I'.$a)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->setCellValue('A'.$a, $sr);
+            $spreadsheet->getActiveSheet()->setCellValue('B'.$a, ucfirst($data->FirstName).' '.$data->LastName);
+            $spreadsheet->getActiveSheet()->setCellValue('C'.$a, ($data->invoice_no !='')?$data->invoice_no:'N/A');
+            $spreadsheet->getActiveSheet()->setCellValue('D'.$a, date('d-M-Y',strtotime($data->invoice_date)));
+            $spreadsheet->getActiveSheet()->setCellValue('E'.$a,moneyFormatIndia((float) $data->Gross_amount) );
+            $spreadsheet->getActiveSheet()->setCellValue('F'.$a,moneyFormatIndia((float) $data->CGST + (float) $data->SGST + (float) $data->IGST));
+            $spreadsheet->getActiveSheet()->setCellValue('G'.$a,moneyFormatIndia($data->Netammount) );
+            $spreadsheet->getActiveSheet()->setCellValue('H'.$a,moneyFormatIndia($data->Balance_Amount) );
+            $spreadsheet->getActiveSheet()->setCellValue('I'.$a, $data->Status);
+            $spreadsheet->getActiveSheet()->getStyle('I'.$a)->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('I'.$a)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
             $a++;
             $sr++;
         }
  
         $filename='Outstanding_Report_For_Month_'.$_POST['months'].'.xlsx'; //save our workbook as this file name
- 
+        $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
         ob_end_clean();
-        header('Content-Type: application/vnd.ms-excel'); //mime type
+        $writer = new Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. $filename);
+        header('Cache-Control: max-age=0');
+        $writer->setPreCalculateFormulas(true);
+        $writer->save('php://output'); // download file
+        //ob_end_clean();
+        //header('Content-Type: application/vnd.ms-excel'); //mime type
  
-        header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
+        //header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
  
-        header("Pragma: no-cache");
-        header("Expires: 0");
-        header('Cache-Control: max-age=0'); //no cache
-        ob_get_clean();       
+        //header("Pragma: no-cache");
+        //header("Expires: 0");
+        //header('Cache-Control: max-age=0'); //no cache
+        //ob_get_clean();       
         //save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
         //if you want to save it as.XLSX Excel 2007 format
  
-        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007'); 
+        //$objWriter = PHPExcel_IOFactory::createWriter($spreadsheet, 'Excel2007'); 
  
         //force user to download the Excel file without writing it to server's HD
-        $objWriter->save('php://output');
+        //$objWriter->save('php://output');
     }
     public function paymentReport()
     {        
@@ -904,8 +974,9 @@ class Reports extends Admin_Parent {
         $userData=$this->Reports_model->GetDataAllPayment($table,$cond,"","p.id");
         //load our new PHPExcel library
         $this->load->library('excel');
+        $spreadsheet = new Spreadsheet();
         // Set document properties
-		$this->excel->getProperties()->setCreator(LOGO)
+		$spreadsheet->getProperties()->setCreator(LOGO)
                                     ->setLastModifiedBy(name)
                                     ->setTitle("Payment Report")
                                     ->setSubject("")
@@ -913,41 +984,41 @@ class Reports extends Admin_Parent {
                                     ->setKeywords("")
                                     ->setCategory("");
 		//activate worksheet number 1
-        $this->excel->setActiveSheetIndex(0);
+        $spreadsheet->setActiveSheetIndex(0);
         //name the worksheet
-        $this->excel->getActiveSheet()->setTitle('Payment Report');
+        $spreadsheet->getActiveSheet()->setTitle('Payment Report');
         //change the font size
-        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
         //make the font become bold
-        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('A2:I2')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('A2:I2')->getFont()->setBold(true);
         //merge cell A1 until D1
-        $this->excel->getActiveSheet()->mergeCells('A1:I1');
-        $this->excel->getActiveSheet()->getColumnDimensionByColumn('A2:H2')->setAutoSize(false);
-        $this->excel->getActiveSheet()->setCellValue('A2', 'Sr No.');
-        $this->excel->getActiveSheet()->getColumnDimension('A')->setWidth('4.42');
-        $this->excel->getActiveSheet()->setCellValue('B2', 'Customer Name');
-        $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth('15');
-        $this->excel->getActiveSheet()->setCellValue('C2', 'Invoice No');
-        $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth('14');
-        $this->excel->getActiveSheet()->setCellValue('D2', 'Receipt No');
-        $this->excel->getActiveSheet()->getColumnDimension('D')->setWidth('14');
-        $this->excel->getActiveSheet()->setCellValue('E2', 'Payment Date');
-        $this->excel->getActiveSheet()->getColumnDimension('E')->setWidth('12');
-        $this->excel->getActiveSheet()->setCellValue('F2', 'Billed Amount');
-        $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth('12');
-        $this->excel->getActiveSheet()->setCellValue('G2', 'Payment Amount');
-        $this->excel->getActiveSheet()->getColumnDimension('G')->setWidth('12');
-        $this->excel->getActiveSheet()->setCellValue('H2', 'Balance Amount');
-        $this->excel->getActiveSheet()->getColumnDimension('H')->setWidth('12');
-        $this->excel->getActiveSheet()->setCellValue('I2', 'Status');
-        $this->excel->getActiveSheet()->getColumnDimension('I')->setWidth('10');
+        $spreadsheet->getActiveSheet()->mergeCells('A1:I1');
+        $spreadsheet->getActiveSheet()->getColumnDimensionByColumn('A2:H2')->setAutoSize(false);
+        $spreadsheet->getActiveSheet()->setCellValue('A2', 'Sr No.');
+        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth('4.42');
+        $spreadsheet->getActiveSheet()->setCellValue('B2', 'Customer Name');
+        $spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth('15');
+        $spreadsheet->getActiveSheet()->setCellValue('C2', 'Invoice No');
+        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth('14');
+        $spreadsheet->getActiveSheet()->setCellValue('D2', 'Receipt No');
+        $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth('14');
+        $spreadsheet->getActiveSheet()->setCellValue('E2', 'Payment Date');
+        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth('12');
+        $spreadsheet->getActiveSheet()->setCellValue('F2', 'Billed Amount');
+        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth('12');
+        $spreadsheet->getActiveSheet()->setCellValue('G2', 'Payment Amount');
+        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth('12');
+        $spreadsheet->getActiveSheet()->setCellValue('H2', 'Balance Amount');
+        $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth('12');
+        $spreadsheet->getActiveSheet()->setCellValue('I2', 'Status');
+        $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth('10');
         //set aligment to center for that merged cell (A1 to J1)
-        $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $this->excel->getActiveSheet()->getStyle('A2:I2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $this->excel->getActiveSheet()->getStyle('A2:I2')->getAlignment()->setWrapText(true)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER );
-        $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setWrapText(true)->setVertical(PHPExcel_Style_Alignment::HORIZONTAL_CENTER );
-        $this->excel->getActiveSheet()->getRowDimension('1')->setRowHeight(45);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $spreadsheet->getActiveSheet()->getStyle('A2:I2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $spreadsheet->getActiveSheet()->getStyle('A2:I2')->getAlignment()->setWrapText(true)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER );
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getAlignment()->setWrapText(true)->setVertical(PHPExcel_Style_Alignment::HORIZONTAL_CENTER );
+        $spreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(45);
         $a = 4;
         $sr = 1;
         $payment = 0;
@@ -958,31 +1029,31 @@ class Reports extends Admin_Parent {
                 $start = date('d-M-Y',strtotime($_POST['start']));
                 $end = date('d-M-Y',strtotime($_POST['end']));
                 if($_POST['months'] == '')
-                    $this->excel->getActiveSheet()->setCellValue('A1', 'Payment Report From '.$start.' To '. $end);
+                    $spreadsheet->getActiveSheet()->setCellValue('A1', 'Payment Report From '.$start.' To '. $end);
                 else
-                    $this->excel->getActiveSheet()->setCellValue('A1', 'Customer Payment Report Of '. $data->FirstName.' '.$data->LastName.' For '.$start.' To '. $end);
+                    $spreadsheet->getActiveSheet()->setCellValue('A1', 'Customer Payment Report Of '. $data->FirstName.' '.$data->LastName.' For '.$start.' To '. $end);
                 
             } else {
                 if($_POST['months'] == '')
-                    $this->excel->getActiveSheet()->setCellValue('A1', 'Payment Report');
+                    $spreadsheet->getActiveSheet()->setCellValue('A1', 'Payment Report');
                 else
-                    $this->excel->getActiveSheet()->setCellValue('A1', 'Customer Payment Report Of '. $data->FirstName.' '.$data->LastName);
+                    $spreadsheet->getActiveSheet()->setCellValue('A1', 'Customer Payment Report Of '. $data->FirstName.' '.$data->LastName);
             }
-            $this->excel->getActiveSheet()->setCellValue('A'.$a, $sr);
-            $this->excel->getActiveSheet()->setCellValue('B'.$a, ucfirst($data->FirstName).' '.$data->LastName);
-            $this->excel->getActiveSheet()->setCellValue('C'.$a, ($data->invoice_no !='')?$data->invoice_no:'N/A');
-            $this->excel->getActiveSheet()->setCellValue('D'.$a, ($data->receipt_no !='')?$data->receipt_no:'N/A');
-            $this->excel->getActiveSheet()->setCellValue('E'.$a,date('d-M-Y',strtotime($data->payment_date)) );
-            $this->excel->getActiveSheet()->setCellValue('F'.$a,(float) $data->billed_amount );
-            $this->excel->getActiveSheet()->getStyle('F'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
-            $this->excel->getActiveSheet()->setCellValue('G'.$a,(float) $data->payed_amount );
+            $spreadsheet->getActiveSheet()->setCellValue('A'.$a, $sr);
+            $spreadsheet->getActiveSheet()->setCellValue('B'.$a, ucfirst($data->FirstName).' '.$data->LastName);
+            $spreadsheet->getActiveSheet()->setCellValue('C'.$a, ($data->invoice_no !='')?$data->invoice_no:'N/A');
+            $spreadsheet->getActiveSheet()->setCellValue('D'.$a, ($data->receipt_no !='')?$data->receipt_no:'N/A');
+            $spreadsheet->getActiveSheet()->setCellValue('E'.$a,date('d-M-Y',strtotime($data->payment_date)) );
+            $spreadsheet->getActiveSheet()->setCellValue('F'.$a,(float) $data->billed_amount );
+            $spreadsheet->getActiveSheet()->getStyle('F'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
+            $spreadsheet->getActiveSheet()->setCellValue('G'.$a,(float) $data->payed_amount );
             $payment += (float) $data->payed_amount;
-            $this->excel->getActiveSheet()->getStyle('G'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
-            $this->excel->getActiveSheet()->setCellValue('H'.$a,(float) $data->balance_amount);
-            $this->excel->getActiveSheet()->getStyle('H'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
-            $this->excel->getActiveSheet()->setCellValue('I'.$a, $data->status);
-            $this->excel->getActiveSheet()->getStyle('I'.$a)->getFont()->setBold(true);
-            $this->excel->getActiveSheet()->getStyle('I'.$a)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->getStyle('G'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
+            $spreadsheet->getActiveSheet()->setCellValue('H'.$a,(float) $data->balance_amount);
+            $spreadsheet->getActiveSheet()->getStyle('H'.$a)->getNumberFormat()->setFormatCode('#,##0.00');
+            $spreadsheet->getActiveSheet()->setCellValue('I'.$a, $data->status);
+            $spreadsheet->getActiveSheet()->getStyle('I'.$a)->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('I'.$a)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
             $a++;
             $sr++;
             if($_POST['months'] == '')
@@ -993,41 +1064,50 @@ class Reports extends Admin_Parent {
         if(empty($userData)){
             $filename='Report_for_payment.xlsx';
         }
-        $this->excel->getActiveSheet()->setCellValue('B'.($a+1), 'Total');
-        $this->excel->getActiveSheet()->getStyle('B'.($a+1))->getFont()->setBold(true);  
-        $this->excel->getActiveSheet()->setCellValue('G'.($a+1), (float) $payment);
-        $this->excel->getActiveSheet()->getStyle('G'.($a+1))->getFont()->setBold(true);  
-        $this->excel->getActiveSheet()->getStyle('G'.($a+1))->getNumberFormat()->setFormatCode('#,##0.00');
-        $this->excel->getActiveSheet()->getStyle('B'.($a+1))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $spreadsheet->getActiveSheet()->setCellValue('B'.($a+1), 'Total');
+        $spreadsheet->getActiveSheet()->getStyle('B'.($a+1))->getFont()->setBold(true);  
+        $spreadsheet->getActiveSheet()->setCellValue('G'.($a+1), (float) $payment);
+        $spreadsheet->getActiveSheet()->getStyle('G'.($a+1))->getFont()->setBold(true);  
+        $spreadsheet->getActiveSheet()->getStyle('G'.($a+1))->getNumberFormat()->setFormatCode('#,##0.00');
+        $spreadsheet->getActiveSheet()->getStyle('B'.($a+1))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
         //Adding border to excel
-        $this->excel->getActiveSheet()->getStyle("A1:I".($a+2))->applyFromArray(
+        $spreadsheet->getActiveSheet()->getStyle("A1:I".($a+2))->applyFromArray(
             array(
                 'borders' => array(
                     'allborders' => array(
-                        'style' => PHPExcel_Style_Border::BORDER_THIN
+                        'style' =>  \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
                         //'color' => array('rgb' => 'DDDDDD')
                     )
                 )
             )
         );
         
-		ob_end_clean();
-		$objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
+        $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
+ 
+        ob_end_clean();
+        $writer = new Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. $filename);
+        header('Cache-Control: max-age=0');
+        $writer->setPreCalculateFormulas(true);
+        $writer->save('php://output'); // download file
+		//ob_end_clean();
+		//$objWriter = PHPExcel_IOFactory::createWriter($spreadsheet, 'Excel2007');
 
 		// Redirect output to a client’s web browser (Excel2007)
-		header('Content-Type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment;filename="'.$filename.'"');
-		header('Cache-Control: max-age=0');
+		//header('Content-Type: application/vnd.ms-excel');
+		//header('Content-Disposition: attachment;filename="'.$filename.'"');
+		//header('Cache-Control: max-age=0');
 		// If you're serving to IE 9, then the following may be needed
-		header('Cache-Control: max-age=1');
+		//header('Cache-Control: max-age=1');
 
 		// If you're serving to IE over SSL, then the following may be needed
-		header ('Expires: '.date('D, d M Y H:i:s')); // Date in the past
-		header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
-		header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-		header ('Pragma: public'); // HTTP/1.0
+		//header ('Expires: '.date('D, d M Y H:i:s')); // Date in the past
+		//header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+		//header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+		//header ('Pragma: public'); // HTTP/1.0
 
-		$objWriter->save('php://output');
+		//$objWriter->save('php://output');
         exit;
     }
     public function send_mail($id){
