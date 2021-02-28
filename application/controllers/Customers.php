@@ -315,7 +315,7 @@ class Customers extends Admin_Parent {
             $email = array($user_data->email,'b.ankit@accordance.co.in');
         }
         //print_r($mail_body);
-        $this->custom->sendEmailSmtp($subject,$mail_body,$email,"", array($data3[12]->value,$data3[0]->value));
+        $this->custom->sendEmailSmtp($subject,$mail_body,$email,"", array($data3[12]->value,$data3[0]->value),"");
         /** Mail function ends here */
     }
     public function _log_entry($receipt){

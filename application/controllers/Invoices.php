@@ -610,7 +610,7 @@ class Invoices extends Admin_Parent {
         } else {
             $email = array($user_data->email,'b.ankit@accordance.co.in');
         }
-        $this->custom->sendEmailSmtp($subject,$mail_body,$email,"", array($data3['settings'][12]->value,$data3['settings'][0]->value));
+        $this->custom->sendEmailSmtp($subject,$mail_body,$email,"", array($data3['settings'][12]->value,$data3['settings'][0]->value),"");
         /** Mail function ends here */
         if(isset($last_id) && isset($last_id2)){
            $userLogs_data = array(
